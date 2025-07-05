@@ -1,8 +1,8 @@
 # Jeju
 # 1st
-<p>Solution architecture</p>
++ Solution architecture
 # 2nd
-<p>NoSQL</p>
-<p>Workflow</p>
-<p>File System security</p>
-<p>VPC Lattice</p>
+1. NoSQL
+2. Workflow
+3. File System security
+4. VPC Lattice
