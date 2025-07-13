@@ -32,7 +32,7 @@ cat > /etc/fluent-bit/fluent-bit.conf << 'EOL'
 [OUTPUT]
     Name              kinesis_streams
     Match             *
-    region            us-west-1
+    region            ap-southeast-1
     stream            input-stream
 EOL
 

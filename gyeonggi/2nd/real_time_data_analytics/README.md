@@ -15,7 +15,7 @@ CREATE TABLE input_table (
 WITH (
     'connector' = 'kinesis',
     'stream' = 'input-stream',
-    'aws.region' = 'us-west-1',
+    'aws.region' = 'ap-southeast-1',
     'scan.stream.initpos' = 'LATEST',
     'format' = 'json',
     'json.timestamp-format.standard' = 'ISO-8601'
@@ -33,7 +33,7 @@ CREATE TABLE output_table (
 WITH (
     'connector' = 'kinesis',
     'stream' = 'output-stream',
-    'aws.region' = 'us-west-1',
+    'aws.region' = 'ap-southeast-1',
     'sink.partitioner' = 'random',
     'format' = 'json',
     'json.timestamp-format.standard' = 'ISO-8601'
