@@ -1,0 +1,53 @@
+name: Build and Deploy to ECR
+
+on:
+  push:
+    paths:
+      - 'index.html'
+
+env:
+  AWS_REGION: ap-southeast-1
+  ECR_REPOSITORY: app-repo
+  TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout source code
+      uses: actions/checkout@v4
+
+    - name: Read version from version file
+      id: read-version
+      run: |
+        echo "VERSION=$(cat version)" >> $GITHUB_ENV
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build and Push Docker image
+      run: |
+        docker build -t ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${VERSION} .
+        docker push ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${VERSION}
+
+    - name: Update image tag in deploy.yaml
+      run: |
+        sed -i "s|image:.*|image: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${VERSION}|" manifest/deploy.yaml
+
+    - name: Commit and Push updated deploy.yaml
+      run: |
+        git config --global user.name "github-actions"
+        git config --global user.email "github-actions@github.com"
+        git remote set-url origin https://x-access-token:${TOKEN}@github.com/${{ github.repository }}
+        git add manifest/deploy.yaml
+        git commit -m "Update image to ${VERSION}" || echo "Nothing to commit"
+        git pull --rebase origin main
+        git push origin HEAD:main
