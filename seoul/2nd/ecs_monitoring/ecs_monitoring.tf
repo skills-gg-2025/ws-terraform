@@ -171,6 +171,152 @@ resource "aws_ecs_cluster" "wsi_ecs_cluster" {
   name = "wsi-ecs-cluster"
 }
 
+# Bastion Host IAM Role
+resource "aws_iam_role" "bastion_role" {
+  name = "bastion-role"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "bastion_admin_access" {
+  role       = aws_iam_role.bastion_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
+}
+
+resource "aws_iam_instance_profile" "bastion_profile" {
+  name = "bastion-profile"
+  role = aws_iam_role.bastion_role.name
+}
+
+# Key Pair
+resource "aws_key_pair" "wsi_bastion_key" {
+  key_name   = "wsi-bastion-key"
+  public_key = file("wsi-bastion-key.pub")
+}
+
+# Bastion Host
+data "aws_ami" "amazon_linux" {
+  most_recent = true
+  owners      = ["amazon"]
+  filter {
+    name   = "name"
+    values = ["al2023-ami-2023.8.20250804.0-kernel-6.1-x86_64"]
+  }
+}
+
+resource "aws_instance" "wsi_bastion" {
+  ami                    = data.aws_ami.amazon_linux.id
+  instance_type          = "t3.micro"
+  key_name               = aws_key_pair.wsi_bastion_key.key_name
+  vpc_security_group_ids = [aws_security_group.bastion_sg.id]
+  subnet_id              = aws_subnet.wsi_pub_a.id
+  iam_instance_profile   = aws_iam_instance_profile.bastion_profile.name
+
+  user_data = <<-EOF
+    #!/bin/bash
+    dnf update -y
+    dnf install -y docker curl jq
+    systemctl start docker
+    systemctl enable docker
+    usermod -a -G docker ec2-user
+    
+    # Wait for docker to be ready
+    sleep 30
+    
+    # Copy source files
+    mkdir -p /home/ec2-user/app
+    cat > /home/ec2-user/app/main.py << 'PYTHON_EOF'
+from flask import Flask
+import time
+
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+    return "Hello from ECS with CloudWatch Logging!"
+
+@app.route('/cpu')
+def cpu_stress():
+    end_time = time.time() + 60
+    while time.time() < end_time:
+        _ = 123456 ** 123456
+    return "CPU stress done."
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=80)
+PYTHON_EOF
+
+    cat > /home/ec2-user/app/Dockerfile << 'DOCKER_EOF'
+FROM python:3.9-slim
+WORKDIR /app
+COPY main.py .
+RUN pip install flask
+EXPOSE 80
+CMD ["python", "main.py"]
+DOCKER_EOF
+
+    chown -R ec2-user:ec2-user /home/ec2-user/app
+  EOF
+
+  tags = {
+    Name = "wsi-bastion"
+  }
+}
+
+# Build and push Docker image
+resource "null_resource" "docker_build_push" {
+  depends_on = [aws_instance.wsi_bastion, aws_ecr_repository.python_app]
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo dnf install -y docker",
+      "sudo systemctl start docker",
+      "sudo systemctl enable docker",
+      "sudo usermod -a -G docker ec2-user",
+      "mkdir -p /home/ec2-user/app",
+      "echo 'from flask import Flask' > /home/ec2-user/app/main.py",
+      "echo 'app = Flask(__name__)' >> /home/ec2-user/app/main.py",
+      "echo '@app.route(\"/\")' >> /home/ec2-user/app/main.py",
+      "echo 'def index(): return \"Hello from ECS!\"' >> /home/ec2-user/app/main.py",
+      "echo 'if __name__ == \"__main__\": app.run(host=\"0.0.0.0\", port=80)' >> /home/ec2-user/app/main.py",
+      "echo 'FROM python:3.9-slim' > /home/ec2-user/app/Dockerfile",
+      "echo 'WORKDIR /app' >> /home/ec2-user/app/Dockerfile",
+      "echo 'COPY main.py .' >> /home/ec2-user/app/Dockerfile",
+      "echo 'RUN pip install flask' >> /home/ec2-user/app/Dockerfile",
+      "echo 'EXPOSE 80' >> /home/ec2-user/app/Dockerfile",
+      "echo 'CMD [\"python\", \"main.py\"]' >> /home/ec2-user/app/Dockerfile",
+      "cd /home/ec2-user/app",
+      "ECR_URI=$(aws ecr describe-repositories --repository-names python-app --region us-east-1 --query 'repositories[0].repositoryUri' --output text)",
+      "aws ecr get-login-password --region us-east-1 | sudo docker login --username AWS --password-stdin $ECR_URI",
+      "sudo docker build -t python-app .",
+      "sudo docker tag python-app:latest $ECR_URI:latest",
+      "sudo docker push $ECR_URI:latest"
+    ]
+
+    connection {
+      type        = "ssh"
+      user        = "ec2-user"
+      private_key = file("wsi-bastion-key")
+      host        = aws_instance.wsi_bastion.public_ip
+      timeout     = "10m"
+    }
+  }
+
+  triggers = {
+    instance_id = aws_instance.wsi_bastion.id
+  }
+}
+
 # ECS Task Definition
 resource "aws_ecs_task_definition" "python_task" {
   family                   = "python-task"
@@ -202,7 +348,7 @@ resource "aws_ecs_task_definition" "python_task" {
     }
   ])
   
-  depends_on = [null_resource.docker_build_on_bastion]
+  depends_on = [null_resource.docker_build_push]
 }
 
 # ALB
@@ -271,17 +417,6 @@ resource "aws_ecs_service" "python_service" {
   depends_on = [aws_lb_listener.wsi_listener, aws_ecs_task_definition.python_task]
 }
 
-# SNS Topic
-resource "aws_sns_topic" "server_error_sns" {
-  name = "server-error-sns"
-}
-
-resource "aws_sns_topic_subscription" "email_notification" {
-  topic_arn = aws_sns_topic.server_error_sns.arn
-  protocol  = "email"
-  endpoint  = "skills+001@chob.app"
-}
-
 # CloudWatch Alarms
 resource "aws_cloudwatch_metric_alarm" "cpu_overload_alarm" {
   alarm_name          = "cpu-overload-alarm"
@@ -317,133 +452,15 @@ resource "aws_cloudwatch_metric_alarm" "memory_utilization" {
   }
 }
 
-# Bastion Host IAM Role
-resource "aws_iam_role" "bastion_role" {
-  name = "bastion-role"
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Principal = {
-          Service = "ec2.amazonaws.com"
-        }
-      }
-    ]
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "bastion_admin_access" {
-  role       = aws_iam_role.bastion_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
-}
-
-resource "aws_iam_instance_profile" "bastion_profile" {
-  name = "bastion-profile"
-  role = aws_iam_role.bastion_role.name
-}
-
-# Key Pair
-resource "aws_key_pair" "wsi_bastion_key" {
-  key_name   = "wsi-bastion-key"
-  public_key = file("wsi-bastion-key.pub")
-}
-
-# Bastion Host
-data "aws_ami" "amazon_linux" {
-  most_recent = true
-  owners      = ["amazon"]
-  filter {
-    name   = "name"
-    values = ["al2023-ami-2023*-x86_64"]
-  }
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-}
-resource "local_file" "dockerfile" {
-  content = <<-EOF
-FROM python:3.9-slim
-WORKDIR /app
-COPY main.py .
-RUN pip install flask
-EXPOSE 80
-CMD ["python", "main.py"]
-EOF
-  filename = "${path.module}/src/Dockerfile"
-}
-
-resource "aws_instance" "wsi_bastion" {
-  ami                    = data.aws_ami.amazon_linux.id
-  instance_type          = "t3.micro"
-  subnet_id              = aws_subnet.wsi_pub_a.id
-  vpc_security_group_ids = [aws_security_group.bastion_sg.id]
-  iam_instance_profile   = aws_iam_instance_profile.bastion_profile.name
-  key_name               = aws_key_pair.wsi_bastion_key.key_name
-
-  user_data = <<-EOF
-    #!/bin/bash
-    yum update -y
-    yum install -y jq docker
-    systemctl start docker
-    systemctl enable docker
-    usermod -a -G docker ec2-user
-    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-    unzip awscliv2.zip
-    mkdir -p /tmp/python-app/
-    ./aws/install
-  EOF
-
-  tags = {
-    Name = "wsi-bastion"
-  }
-}
-
-# Docker build on Bastion Host
-resource "null_resource" "docker_build_on_bastion" {
-  depends_on = [aws_instance.wsi_bastion, aws_ecr_repository.python_app]
-  
-  connection {
-    type        = "ssh"
-    host        = aws_instance.wsi_bastion.public_ip
-    user        = "ec2-user"
-    private_key = file("wsi-bastion-key.pem")
-    timeout     = "5m"
-  }
-  
-  provisioner "file" {
-    source      = "src/"
-    destination = "/tmp/python-app"
-  }
-  
-  provisioner "remote-exec" {
-    inline = [
-      "sudo yum install -y docker",
-      "sudo systemctl start docker",
-      "sudo systemctl enable docker",
-      "cd /tmp/python-app",
-      "aws ecr get-login-password --region us-east-1 | sudo docker login --username AWS --password-stdin ${aws_ecr_repository.python_app.repository_url}",
-      "sudo docker build -t python-app .",
-      "sudo docker tag python-app:latest ${aws_ecr_repository.python_app.repository_url}:latest",
-      "sudo docker push ${aws_ecr_repository.python_app.repository_url}:latest"
-    ]
-  }
-}
-
 # Outputs
-output "bastion_public_ip" {
-  value = aws_instance.wsi_bastion.public_ip
-  description = "Public IP of the Bastion Host"
-}
-
-output "ssh_command" {
-  value = "ssh -i wsi-bastion-key.pem ec2-user@${aws_instance.wsi_bastion.public_ip}"
-  description = "SSH command to connect to Bastion Host"
-}
-
 output "alb_dns_name" {
   value = aws_lb.wsi_alb.dns_name
-  description = "DNS name of the Application Load Balancer"
+}
+
+output "bastion_public_ip" {
+  value = aws_instance.wsi_bastion.public_ip
+}
+
+output "ecr_repository_url" {
+  value = aws_ecr_repository.python_app.repository_url
 }
