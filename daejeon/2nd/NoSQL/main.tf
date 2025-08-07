@@ -1,10 +1,10 @@
 provider "aws" {
-  region = "ap-northeast-2"
+  region = "us-west-1"
   alias  = "primary"
 }
 
 provider "aws" {
-  region = "eu-central-1"
+  region = "us-west-2"
   alias  = "secondary"
 }
 
@@ -28,7 +28,7 @@ resource "aws_dynamodb_table" "account_table" {
   stream_view_type = "NEW_AND_OLD_IMAGES"
 
   replica {
-    region_name            = "eu-central-1"
+    region_name            = "us-west-2"
     point_in_time_recovery = true
   }
 
@@ -144,11 +144,65 @@ resource "aws_lambda_permission" "allow_eventbridge" {
   source_arn    = aws_cloudwatch_event_rule.account_conflict_event.arn
 }
 
+# VPC Configuration
+resource "aws_vpc" "main" {
+  provider             = aws.primary
+  cidr_block           = "10.0.0.0/16"
+  enable_dns_support   = true
+  enable_dns_hostnames = true
+
+  tags = {
+    Name = "account-app-vpc"
+  }
+}
+
+resource "aws_subnet" "main" {
+  provider                = aws.primary
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.0.1.0/24"
+  availability_zone       = "us-west-1a"
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name = "account-app-subnet"
+  }
+}
+
+resource "aws_internet_gateway" "main" {
+  provider = aws.primary
+  vpc_id   = aws_vpc.main.id
+
+  tags = {
+    Name = "account-app-igw"
+  }
+}
+
+resource "aws_route_table" "main" {
+  provider = aws.primary
+  vpc_id   = aws_vpc.main.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.main.id
+  }
+
+  tags = {
+    Name = "account-app-rt"
+  }
+}
+
+resource "aws_route_table_association" "main" {
+  provider       = aws.primary
+  subnet_id      = aws_subnet.main.id
+  route_table_id = aws_route_table.main.id
+}
+
 # Security Group for EC2
 resource "aws_security_group" "app_sg" {
   provider    = aws.primary
   name        = "account-app-sg"
   description = "Security group for account application"
+  vpc_id      = aws_vpc.main.id
 
   ingress {
     from_port   = 8080
@@ -169,6 +223,10 @@ resource "aws_security_group" "app_sg" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "account-app-sg"
   }
 }
 
@@ -231,6 +289,7 @@ resource "aws_instance" "account_app" {
   instance_type               = "t3.micro"
   iam_instance_profile        = aws_iam_instance_profile.ec2_profile.name
   vpc_security_group_ids      = [aws_security_group.app_sg.id]
+  subnet_id                   = aws_subnet.main.id
   associate_public_ip_address = true
 
   user_data_base64 = base64encode(templatefile("${path.module}/user_data.sh", {
