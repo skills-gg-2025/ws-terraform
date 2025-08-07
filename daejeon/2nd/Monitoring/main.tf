@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "ap-northeast-1"
+  region = "us-west-1"
 }
 
 data "aws_region" "current" {}
@@ -21,7 +21,7 @@ resource "aws_vpc" "wsi_vpc" {
 resource "aws_subnet" "wsi_pub_sn_a" {
   vpc_id                  = aws_vpc.wsi_vpc.id
   cidr_block              = "10.0.10.0/24"
-  availability_zone       = "ap-northeast-1a"
+  availability_zone       = "us-west-1a"
   map_public_ip_on_launch = true
 
   tags = {
@@ -32,7 +32,7 @@ resource "aws_subnet" "wsi_pub_sn_a" {
 resource "aws_subnet" "wsi_pub_sn_c" {
   vpc_id                  = aws_vpc.wsi_vpc.id
   cidr_block              = "10.0.11.0/24"
-  availability_zone       = "ap-northeast-1c"
+  availability_zone       = "us-west-1c"
   map_public_ip_on_launch = true
 
   tags = {
@@ -44,7 +44,7 @@ resource "aws_subnet" "wsi_pub_sn_c" {
 resource "aws_subnet" "wsi_priv_sn_a" {
   vpc_id            = aws_vpc.wsi_vpc.id
   cidr_block        = "10.0.20.0/24"
-  availability_zone = "ap-northeast-1a"
+  availability_zone = "us-west-1a"
 
   tags = {
     Name = "wsi-priv-sn-a"
@@ -54,7 +54,7 @@ resource "aws_subnet" "wsi_priv_sn_a" {
 resource "aws_subnet" "wsi_priv_sn_c" {
   vpc_id            = aws_vpc.wsi_vpc.id
   cidr_block        = "10.0.21.0/24"
-  availability_zone = "ap-northeast-1c"
+  availability_zone = "us-west-1c"
 
   tags = {
     Name = "wsi-priv-sn-c"

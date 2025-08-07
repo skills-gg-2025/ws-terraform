@@ -17,7 +17,7 @@ resource "aws_cloudwatch_dashboard" "app_dashboard" {
           ]
           period = 60
           stat   = "Sum"
-          region = "ap-northeast-1"
+          region = "us-west-1"
           title  = "wsi-success"
         }
       },
@@ -34,7 +34,7 @@ resource "aws_cloudwatch_dashboard" "app_dashboard" {
           ]
           period = 60
           stat   = "Sum"
-          region = "ap-northeast-1"
+          region = "us-west-1"
           title  = "wsi-fail"
         }
       },
@@ -52,7 +52,7 @@ resource "aws_cloudwatch_dashboard" "app_dashboard" {
             ["AWS/ApplicationELB", "TargetConnectionErrorCount", "LoadBalancer", aws_lb.app_alb.arn_suffix, { id = "m2", visible = false }]
           ]
           view   = "gauge"
-          region = "ap-northeast-1"
+          region = "us-west-1"
           title  = "wsi-sli"
           period = 300
           stat   = "Sum"
@@ -78,7 +78,7 @@ resource "aws_cloudwatch_dashboard" "app_dashboard" {
             ["AWS/ApplicationELB", "TargetResponseTime", "LoadBalancer", aws_lb.app_alb.arn_suffix, { stat = "p99" }]
           ]
           period  = 60
-          region  = "ap-northeast-1"
+          region  = "us-west-1"
           title   = "wsi-p90-p96-p99"
           view    = "timeSeries"
           stacked = false
@@ -97,9 +97,9 @@ resource "aws_cloudwatch_query_definition" "app_query" {
   ]
 
   query_string = <<EOF
-fields @timestamp, @message
-| parse @message "* * * * * * * * *s" as timestamp, src_ip, dst_ip, method, path, status, send_size, recv_size, duration
-| filter status like /2\d\d/
-| stats count(*) as success_count by bin(5m)
+parse @message "* * * * * * * *" as raw_date, raw_time, raw_src_ip, raw_dst_ip, http_method, http_path, http_status, http_duration
+| filter abs(toMillis(now()) - toMillis(@timestamp)) <= 60000
+| sort @timestamp desc
+| fields raw_date as date, raw_time as time, raw_src_ip as src_ip, raw_dst_ip as dst_ip, http_method as method, http_path as path, http_status as status, http_duration as duration
 EOF
 }
