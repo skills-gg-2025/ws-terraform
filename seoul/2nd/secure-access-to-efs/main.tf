@@ -556,13 +556,13 @@ resource "aws_efs_file_system_policy" "wsi_efs_policy" {
     Statement = [
       {
         Sid    = "RequireSSL"
-        Effect = "Deny"
+        Effect = "Allow"
         Principal = "*"
         Action = "*"
         Resource = aws_efs_file_system.wsi_efs.arn
         Condition = {
           Bool = {
-            "aws:SecureTransport" = "false"
+            "aws:SecureTransport" = "true"
           }
         }
       },
