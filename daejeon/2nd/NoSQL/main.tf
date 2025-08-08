@@ -1,10 +1,10 @@
 provider "aws" {
-  region = "us-west-1"
+  region = "ap-northeast-2"
   alias  = "primary"
 }
 
 provider "aws" {
-  region = "us-west-2"
+  region = "eu-central-1"
   alias  = "secondary"
 }
 
@@ -28,7 +28,7 @@ resource "aws_dynamodb_table" "account_table" {
   stream_view_type = "NEW_AND_OLD_IMAGES"
 
   replica {
-    region_name            = "us-west-2"
+    region_name            = "eu-central-1"
     point_in_time_recovery = true
   }
 
@@ -160,7 +160,7 @@ resource "aws_subnet" "main" {
   provider                = aws.primary
   vpc_id                  = aws_vpc.main.id
   cidr_block              = "10.0.1.0/24"
-  availability_zone       = "us-west-1a"
+  availability_zone       = "ap-northeast-2a"
   map_public_ip_on_launch = true
 
   tags = {
