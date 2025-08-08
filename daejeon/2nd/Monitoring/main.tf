@@ -157,3 +157,4 @@ resource "aws_route_table_association" "priv_c_association" {
   subnet_id      = aws_subnet.wsi_priv_sn_c.id
   route_table_id = aws_route_table.wsi_priv_rt_c.id
 }
+

@@ -17,7 +17,7 @@ resource "aws_cloudwatch_dashboard" "app_dashboard" {
           ]
           period = 60
           stat   = "Sum"
-          region = "us-west-1"
+          region = "ap-southeast-1"
           title  = "wsi-success"
         }
       },
@@ -34,7 +34,7 @@ resource "aws_cloudwatch_dashboard" "app_dashboard" {
           ]
           period = 60
           stat   = "Sum"
-          region = "us-west-1"
+          region = "ap-southeast-1"
           title  = "wsi-fail"
         }
       },
@@ -52,7 +52,7 @@ resource "aws_cloudwatch_dashboard" "app_dashboard" {
             ["AWS/ApplicationELB", "TargetConnectionErrorCount", "LoadBalancer", aws_lb.app_alb.arn_suffix, { id = "m2", visible = false }]
           ]
           view   = "gauge"
-          region = "us-west-1"
+          region = "ap-southeast-1"
           title  = "wsi-sli"
           period = 300
           stat   = "Sum"
@@ -78,7 +78,7 @@ resource "aws_cloudwatch_dashboard" "app_dashboard" {
             ["AWS/ApplicationELB", "TargetResponseTime", "LoadBalancer", aws_lb.app_alb.arn_suffix, { stat = "p99" }]
           ]
           period  = 60
-          region  = "us-west-1"
+          region  = "ap-southeast-1"
           title   = "wsi-p90-p96-p99"
           view    = "timeSeries"
           stacked = false
@@ -97,9 +97,10 @@ resource "aws_cloudwatch_query_definition" "app_query" {
   ]
 
   query_string = <<EOF
-parse @message "* * * * * * * *" as raw_date, raw_time, raw_src_ip, raw_dst_ip, http_method, http_path, http_status, http_duration
-| filter abs(toMillis(now()) - toMillis(@timestamp)) <= 60000
+parse @message /(?<log_date>\d{4}\/\d{2}\/\d{2}) (?<log_time>\d{2}:\d{2}:\d{2}) (?<local_ip>\S+) (?<remote_ip>\S+) (?<method>\S+) (?<path>\S+) (?<status>\d+) (?<size>\d+) (?<referer>\d+) (?<response_time>\S+)/
+| filter path = "/healthcheck"
 | sort @timestamp desc
-| fields raw_date as date, raw_time as time, raw_src_ip as src_ip, raw_dst_ip as dst_ip, http_method as method, http_path as path, http_status as status, http_duration as duration
+| limit 1
+| stats latest(@timestamp) as current_time, latest(log_date) as latest_log_date, latest(log_time) as latest_log_time, latest(local_ip) as latest_local_ip, latest(remote_ip) as latest_remote_ip, latest(method) as latest_method, latest(path) as latest_path, latest(status) as latest_status, latest(response_time) as latest_response_time
 EOF
 }
