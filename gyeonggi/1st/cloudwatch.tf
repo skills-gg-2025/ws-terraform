@@ -3,7 +3,7 @@ resource "aws_cloudwatch_metric_alarm" "alb_4xx_alarm" {
   alarm_name          = "ws25-alb-4xx-alarm"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = "1"
-  metric_name         = "HTTPCode_Target_4XX_Count"
+  metric_name         = "HTTPCode_ELB_4XX_Count"
   namespace           = "AWS/ApplicationELB"
   period              = "300"
   statistic           = "Sum"
@@ -23,7 +23,7 @@ resource "aws_cloudwatch_metric_alarm" "alb_5xx_alarm" {
   alarm_name          = "ws25-alb-5xx-alarm"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = "1"
-  metric_name         = "HTTPCode_Target_5XX_Count"
+  metric_name         = "HTTPCode_ELB_5XX_Count"
   namespace           = "AWS/ApplicationELB"
   period              = "300"
   statistic           = "Sum"
@@ -54,14 +54,15 @@ resource "aws_cloudwatch_dashboard" "metrics" {
 
         properties = {
           metrics = [
-            ["AWS/VPC", "PacketsReceived", "VpcId", aws_vpc.hub_vpc.id],
-            [".", ".", "VpcId", aws_vpc.app_vpc.id]
+            ["Custom/VPC", "ws25-hub-vpc-accept"],
+            [".", "ws25-app-vpc-accept"]
           ]
           view    = "timeSeries"
           stacked = false
           region  = "ap-northeast-2"
           title   = "VPC Flow Log - Accepted Traffic"
           period  = 60
+          stat    = "Sum"
         }
       },
       {
@@ -81,6 +82,7 @@ resource "aws_cloudwatch_dashboard" "metrics" {
           region  = "ap-northeast-2"
           title   = "Green Path Requests"
           period  = 60
+          stat    = "Sum"
         }
       },
       {
@@ -100,6 +102,7 @@ resource "aws_cloudwatch_dashboard" "metrics" {
           region  = "ap-northeast-2"
           title   = "Red Path Requests"
           period  = 60
+          stat    = "Sum"
         }
       },
       {
@@ -111,32 +114,15 @@ resource "aws_cloudwatch_dashboard" "metrics" {
 
         properties = {
           metrics = [
-            ["AWS/RDS", "DatabaseConnections", "DBClusterIdentifier", aws_rds_cluster.aurora_cluster.cluster_identifier]
-          ]
-          view    = "timeSeries"
-          stacked = false
-          region  = "ap-northeast-2"
-          title   = "Database Error Logs"
-          period  = 60
-        }
-      },
-      {
-        type   = "metric"
-        x      = 0
-        y      = 6
-        width  = 6
-        height = 6
-
-        properties = {
-          metrics = [
-            ["AWS/ApplicationELB", "HTTPCode_Target_4XX_Count", "LoadBalancer", aws_lb.app_alb.arn_suffix],
-            [".", "HTTPCode_Target_5XX_Count", ".", "."]
+            ["AWS/ApplicationELB", "HTTPCode_ELB_4XX_Count", "LoadBalancer", aws_lb.app_alb.arn_suffix],
+            [".", "HTTPCode_ELB_5XX_Count", ".", "."]
           ]
           view    = "timeSeries"
           stacked = false
           region  = "ap-northeast-2"
           title   = "ALB 4xx/5xx Errors"
           period  = 60
+          stat    = "Sum"
         }
       }
     ]
@@ -192,17 +178,27 @@ resource "aws_cloudwatch_log_metric_filter" "red_post_requests" {
   }
 }
 
-# Database Error Log Metric Filter
-resource "aws_cloudwatch_log_metric_filter" "db_error_logs" {
-  name           = "db-error-logs"
-  log_group_name = "/aws/rds/cluster/${aws_rds_cluster.aurora_cluster.cluster_identifier}/error"
-  pattern        = "ERROR"
+# VPC Flow Log Metric Filter
+resource "aws_cloudwatch_log_metric_filter" "hub_flow_logs" {
+  name           = "ws25-hub-vpc-accept"
+  log_group_name = aws_cloudwatch_log_group.hub_flow_logs.name
+  pattern        = "ACCEPT"
 
   metric_transformation {
-    name      = "DatabaseErrors"
-    namespace = "Custom/Database"
+    name      = "ws25-hub-vpc-accept"
+    namespace = "Custom/VPC"
     value     = "1"
   }
+}
 
-  depends_on = [aws_rds_cluster_instance.aurora_instance_writer]
+resource "aws_cloudwatch_log_metric_filter" "app_flow_logs" {
+  name           = "ws25-app-flow-logs"
+  log_group_name = aws_cloudwatch_log_group.app_flow_logs.name
+  pattern        = "ACCEPT"
+
+  metric_transformation {
+    name      = "ws25-app-vpc-accept"
+    namespace = "Custom/VPC"
+    value     = "1"
+  }
 }

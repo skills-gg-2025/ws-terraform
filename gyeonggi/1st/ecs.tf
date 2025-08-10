@@ -3,15 +3,14 @@ resource "aws_ecs_cluster" "main" {
   name = "ws25-ecs-cluster"
 
   configuration {
-    execute_command_configuration {
+    managed_storage_configuration {
       kms_key_id = aws_kms_key.rds_key.arn
-      logging    = "OVERRIDE"
-
-      log_configuration {
-        cloud_watch_encryption_enabled = true
-        cloud_watch_log_group_name     = aws_cloudwatch_log_group.ecs_logs.name
-      }
     }
+  }
+
+  setting {
+    name  = "containerInsights"
+    value = "enhanced"
   }
 
   tags = {
@@ -19,18 +18,7 @@ resource "aws_ecs_cluster" "main" {
   }
 }
 
-resource "aws_ecs_account_setting_default" "container_insights" {
-  name  = "containerInsights"
-  value = "enabled"
-}
-
 # CloudWatch Log Groups
-resource "aws_cloudwatch_log_group" "ecs_logs" {
-  name              = "/ecs/ws25-cluster"
-  retention_in_days = 7
-  kms_key_id        = aws_kms_key.rds_key.arn
-}
-
 resource "aws_cloudwatch_log_group" "green_logs" {
   name              = "/ws25/logs/green"
   retention_in_days = 7
@@ -511,6 +499,8 @@ resource "aws_ecs_service" "green" {
     type = "distinctInstance"
   }
 
+  availability_zone_rebalancing = "ENABLED"
+
   lifecycle {
     ignore_changes = [task_definition]
   }
@@ -540,6 +530,8 @@ resource "aws_ecs_service" "red" {
     container_name   = "red"
     container_port   = 8080
   }
+
+  availability_zone_rebalancing = "ENABLED"
 
   lifecycle {
     ignore_changes = [task_definition]

@@ -34,7 +34,7 @@ resource "terraform_data" "green_100" {
 
   provisioner "local-exec" {
     command = <<-EOT
-      docker build -t ${aws_ecr_repository.green.repository_url}:v1.0.0 ${path.module}/src/green_1.0.0
+      docker build --platform linux/amd64 -t ${aws_ecr_repository.green.repository_url}:v1.0.0 ${path.module}/src/green_1.0.0
     EOT
   }
 
@@ -54,7 +54,7 @@ resource "terraform_data" "green_101" {
 
   provisioner "local-exec" {
     command = <<-EOT
-      docker build -t ${aws_ecr_repository.green.repository_url}:v1.0.1 ${path.module}/src/green_1.0.1
+      docker build --platform linux/amd64 -t ${aws_ecr_repository.green.repository_url}:v1.0.1 ${path.module}/src/green_1.0.1
     EOT
   }
 
@@ -74,7 +74,7 @@ resource "terraform_data" "red_100" {
 
   provisioner "local-exec" {
     command = <<-EOT
-      docker build -t ${aws_ecr_repository.red.repository_url}:v1.0.0 ${path.module}/src/red_1.0.0
+      docker build --platform linux/amd64 -t ${aws_ecr_repository.red.repository_url}:v1.0.0 ${path.module}/src/red_1.0.0
     EOT
   }
 
@@ -94,7 +94,7 @@ resource "terraform_data" "red_101" {
 
   provisioner "local-exec" {
     command = <<-EOT
-      docker build -t ${aws_ecr_repository.red.repository_url}:v1.0.1 ${path.module}/src/red_1.0.1
+      docker build --platform linux/amd64 -t ${aws_ecr_repository.red.repository_url}:v1.0.1 ${path.module}/src/red_1.0.1
     EOT
   }
 

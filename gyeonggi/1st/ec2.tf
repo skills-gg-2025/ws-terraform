@@ -53,7 +53,7 @@ resource "aws_iam_role_policy_attachment" "bastion_admin" {
 }
 
 resource "aws_iam_instance_profile" "bastion_profile" {
-  name = "ws25-bastion-profile"
+  name = "ws25-bastion-role"
   role = aws_iam_role.bastion_role.name
 }
 

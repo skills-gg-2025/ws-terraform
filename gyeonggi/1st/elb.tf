@@ -44,7 +44,21 @@ resource "aws_lb" "app_nlb" {
   name               = "ws25-app-nlb"
   internal           = true
   load_balancer_type = "network"
-  subnets            = [aws_subnet.app_pri_a.id, aws_subnet.app_pri_c.id]
+
+  subnet_mapping {
+    subnet_id = aws_subnet.app_pri_a.id
+    private_ipv4_address = "10.200.20.100"
+  }
+
+  subnet_mapping {
+    subnet_id = aws_subnet.app_pri_b.id
+    private_ipv4_address = "10.200.21.100"
+  }
+
+  subnet_mapping {
+    subnet_id = aws_subnet.app_pri_c.id
+    private_ipv4_address = "10.200.22.100"
+  }
 
   tags = {
     Name = "ws25-app-nlb"
@@ -323,14 +337,21 @@ resource "aws_lb_target_group_attachment" "hub_nlb_target_a" {
   target_group_arn  = aws_lb_target_group.hub_nlb_tg.arn
   target_id         = data.aws_network_interface.app_nlb_eni_a.private_ip
   port              = 80
-  availability_zone = data.aws_network_interface.app_nlb_eni_a.availability_zone
+  availability_zone = "ap-northeast-2a"
+}
+
+resource "aws_lb_target_group_attachment" "hub_nlb_target_b" {
+  target_group_arn  = aws_lb_target_group.hub_nlb_tg.arn
+  target_id         = data.aws_network_interface.app_nlb_eni_b.private_ip
+  port              = 80
+  availability_zone = "ap-northeast-2c"
 }
 
 resource "aws_lb_target_group_attachment" "hub_nlb_target_c" {
   target_group_arn  = aws_lb_target_group.hub_nlb_tg.arn
   target_id         = data.aws_network_interface.app_nlb_eni_c.private_ip
   port              = 80
-  availability_zone = data.aws_network_interface.app_nlb_eni_c.availability_zone
+  availability_zone = "ap-northeast-2a"
 }
 
 # Data source to get App NLB ENI IPs
@@ -347,6 +368,10 @@ data "aws_network_interface" "app_nlb_eni_a" {
   id = data.aws_network_interfaces.app_nlb_enis.ids[0]
 }
 
-data "aws_network_interface" "app_nlb_eni_c" {
+data "aws_network_interface" "app_nlb_eni_b" {
   id = data.aws_network_interfaces.app_nlb_enis.ids[1]
+}
+
+data "aws_network_interface" "app_nlb_eni_c" {
+  id = data.aws_network_interfaces.app_nlb_enis.ids[2]
 }
