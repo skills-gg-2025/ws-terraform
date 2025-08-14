@@ -274,9 +274,6 @@ resource "aws_instance" "bastion" {
 
   user_data = <<-EOF
     #!/bin/bash
-    type -p yum-config-manager >/dev/null || sudo yum install yum-utils
-    sudo yum-config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo
-    sudo yum install gh
     yum update -y
     yum install -y docker
     systemctl start docker
@@ -310,25 +307,19 @@ resource "aws_instance" "gac_runner" {
   user_data = <<-EOF
     #!/bin/bash
     yum update -y
-    yum install -y docker git curl jq
+    yum install -y docker
     systemctl start docker
     systemctl enable docker
     usermod -a -G docker ec2-user
-    
-    # Install GitHub CLI
-    type -p yum-config-manager >/dev/null || yum install -y yum-utils
-    yum-config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo
-    yum install -y gh
-    
-    # Install kubectl
     curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.33.0/2025-05-01/bin/linux/amd64/kubectl
     chmod +x ./kubectl
     mv ./kubectl /usr/local/bin/kubectl
-    
-    # Install AWS CLI v2
-    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-    unzip awscliv2.zip
-    ./aws/install
+    kubectl completion bash | tee /etc/bash_completion.d/kubectl > /dev/null
+    curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+    chmod 700 get_helm.sh
+    ./get_helm.sh
+    curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+    mv /tmp/eksctl /usr/local/bin
   EOF
 
   tags = {
