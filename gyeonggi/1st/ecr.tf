@@ -26,6 +26,9 @@ resource "aws_ecr_repository" "red" {
 }
 
 resource "terraform_data" "green_100" {
+  triggers_replace = {
+    version = "v1.0.0"
+  }
   provisioner "local-exec" {
     command = <<-EOT
       aws ecr get-login-password --region ${data.aws_region.current.region} | docker login --username AWS --password-stdin ${data.aws_caller_identity.current.account_id}.dkr.ecr.${data.aws_region.current.region}.amazonaws.com
@@ -46,6 +49,9 @@ resource "terraform_data" "green_100" {
 }
 
 resource "terraform_data" "green_101" {
+  triggers_replace = {
+    version = "v1.0.1"
+  }
   provisioner "local-exec" {
     command = <<-EOT
       aws ecr get-login-password --region ${data.aws_region.current.region} | docker login --username AWS --password-stdin ${data.aws_caller_identity.current.account_id}.dkr.ecr.${data.aws_region.current.region}.amazonaws.com
@@ -66,6 +72,9 @@ resource "terraform_data" "green_101" {
 }
 
 resource "terraform_data" "red_100" {
+  triggers_replace = {
+    version = "v1.0.0"
+  }
   provisioner "local-exec" {
     command = <<-EOT
       aws ecr get-login-password --region ${data.aws_region.current.region} | docker login --username AWS --password-stdin ${data.aws_caller_identity.current.account_id}.dkr.ecr.${data.aws_region.current.region}.amazonaws.com
@@ -86,6 +95,9 @@ resource "terraform_data" "red_100" {
 }
 
 resource "terraform_data" "red_101" {
+  triggers_replace = {
+    version = "v1.0.1"
+  }
   provisioner "local-exec" {
     command = <<-EOT
       aws ecr get-login-password --region ${data.aws_region.current.region} | docker login --username AWS --password-stdin ${data.aws_caller_identity.current.account_id}.dkr.ecr.${data.aws_region.current.region}.amazonaws.com

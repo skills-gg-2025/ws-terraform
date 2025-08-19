@@ -68,7 +68,7 @@ resource "aws_ecs_cluster_capacity_providers" "main" {
 # Launch Template for ECS EC2 instances
 resource "aws_launch_template" "ecs_lt" {
   name_prefix   = "ws25-ecs-lt"
-  image_id      = data.aws_ami.ecs_optimized.id
+  image_id      = data.aws_ami.ecs_al2023_optimized.id
   instance_type = "t3.medium"
   key_name      = aws_key_pair.bastion_key.key_name
 
@@ -304,6 +304,11 @@ resource "aws_ecs_task_definition" "green" {
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
   task_role_arn            = aws_iam_role.ecs_task_role.arn
 
+  runtime_platform {
+    operating_system_family = "LINUX"
+    cpu_architecture        = "X86_64"
+  }
+
   container_definitions = jsonencode([
     {
       name  = "green"
@@ -393,6 +398,11 @@ resource "aws_ecs_task_definition" "red" {
   memory                   = "1024"
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
   task_role_arn            = aws_iam_role.ecs_task_role.arn
+
+  runtime_platform {
+    operating_system_family = "LINUX"
+    cpu_architecture        = "X86_64"
+  }
 
   container_definitions = jsonencode([
     {
@@ -495,9 +505,6 @@ resource "aws_ecs_service" "green" {
     container_port   = 8080
   }
 
-  placement_constraints {
-    type = "distinctInstance"
-  }
 
   availability_zone_rebalancing = "ENABLED"
 
@@ -541,12 +548,12 @@ resource "aws_ecs_service" "red" {
 }
 
 # Data source for ECS optimized AMI
-data "aws_ami" "ecs_optimized" {
+data "aws_ami" "ecs_al2023_optimized" {
   most_recent = true
   owners      = ["amazon"]
 
   filter {
     name   = "name"
-    values = ["amzn2-ami-ecs-hvm-*-x86_64-ebs"]
+    values = ["al2023-ami-ecs-hvm-*-x86_64"]
   }
 }

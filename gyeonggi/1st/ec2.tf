@@ -27,7 +27,7 @@ data "aws_ami" "amazon_linux" {
 # Key Pair for Bastion
 resource "aws_key_pair" "bastion_key" {
   key_name   = "ws25-bastion-key"
-  public_key = file("./src/id_rsa.pub")
+  public_key = file("./src/ws25-bastion-key.pem.pub")
 }
 
 # IAM Role for Bastion with full AWS access
