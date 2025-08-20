@@ -1,4 +1,4 @@
-# Gyunggi
+# Gyeonggi
 
 ## Day 1
 - Solution Architecture
