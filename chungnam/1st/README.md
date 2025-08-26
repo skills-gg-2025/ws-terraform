@@ -1,5 +1,5 @@
 ## Web ServiceProvisioning
-밑줄 그거둔 부분은 직접 생성해야합니다.
+10, 11, 12, 13 부분은 직접 생성해야합니다. 
 
 ## 3. Network Configure
 Cloud내에 가상 사설 Network를 구축할 수 있도록 아래의 설명과 Reference01의 표를 참고하여 VPC를 구성하도록 합니다. Reference01의 표를 참고하여 VPC를 구성하도록 하며, Subnet 이름 뒤에 알파벳은 가용 영역(AZ)을 의미합니다.
@@ -18,7 +18,7 @@ Cloud내에 가상 사설 Network를 구축할 수 있도록 아래의 설명과
 - Required Package : awscliv2 , curl , kubectl , jq
 
 ## 7. Database
-Green, Red 앱에서 사용하는 RDBMS 엔진으로 MySQL을 사용하며 데이터베이스 이름은 day1 입니다. 테이블 생성은 첨부파일 day1_table_v1.sql을 이용합니다. 데이터베이스는 Multi-AZ DB instance으로 생성하며, Application VPC에 DB Subnet에 생성합니다. <u>day1_table_v1.sql 삽입 필요</u>
+Green, Red 앱에서 사용하는 RDBMS 엔진으로 MySQL을 사용하며 데이터베이스 이름은 day1 입니다. 테이블 생성은 첨부파일 day1_table_v1.sql을 이용합니다. 데이터베이스는 Multi-AZ DB instance으로 생성하며, Application VPC에 DB Subnet에 생성합니다. ⚠️day1_table_v1.sql 삽입 필요⚠️ 
 
 - DB Instance Name : wsc2025-db-instance
 - DB Engine : MySQL Community
@@ -27,7 +27,7 @@ Green, Red 앱에서 사용하는 RDBMS 엔진으로 MySQL을 사용하며 데�
 - DB instance class : db.t3.medium 
 
 ## 8. Container Registry
-Registry 컨테이너 이미지 저장을 위해 ECR을 사용하도록 합니다. 바이너리 이름과 동일하게 green/v1.0.0, red/v1.0.0 , green/v1.0.1, red/v1.0.1 총 4개의 이미지를 업로드 해둡니다. 과제는 1.0.0으로 진행하고 CD pipeline 채점시 v1.0.1 이미지를 활용합니다. <u>어플리케이션 업로드 필요</u>
+Registry 컨테이너 이미지 저장을 위해 ECR을 사용하도록 합니다. 바이너리 이름과 동일하게 green/v1.0.0, red/v1.0.0 , green/v1.0.1, red/v1.0.1 총 4개의 이미지를 업로드 해둡니다. 과제는 1.0.0으로 진행하고 CD pipeline 채점시 v1.0.1 이미지를 활용합니다. ⚠️어플리케이션 업로드 필요⚠️
 
 ## 9. S3
 애플리케이션 관련 파일들을 S3에 체계적으로 저장하여 관리합니다. /source/green 프리픽스에는 Green 애플리케이션 및 Green ECR에 푸시할 파일들을, /source/red 프리픽스에는 Red 애플리케이션 및 Red ECR에 푸시할 파일들을 각각 업로드합니다. 각 애플리케이션 및 ECR에 푸시할 파일들을 zip 파일 형태로 업로드하며, Green과 Red 각각에 대해 독립적으로 버전 및 패키지를 관리할 수 있도록 구성합니다.
@@ -36,8 +36,7 @@ Registry 컨테이너 이미지 저장을 위해 ECR을 사용하도록 합니�
 - Red ZIP File Name: red.zip
 
 ## <u>10. Container Orchestartion</u>
-EKS를 통해 컨테이너를 배포하고 관리합니다. 주어진 애플리케이션들은 각각 wsc2025-red-app, wsc2025-green-app라는 이름의 container으로 구성하며, pod들은 wsc2025이라는 namespace에 생성합니다. Cluster는 Application VPC에 위치해야 하며, node name은 <instance-id>.ec2.internal로 변경합니다. Kubernetes 내부에서 사용하는 Domain을 기존 *.cluster.local에서 *.wsc2025.local로 변경합니다. <u>k8s 디렉토리에 있는 yaml 파일로 생성합니다.
-</u>
+EKS를 통해 컨테이너를 배포하고 관리합니다. 주어진 애플리케이션들은 각각 wsc2025-red-app, wsc2025-green-app라는 이름의 container으로 구성하며, pod들은 wsc2025이라는 namespace에 생성합니다. Cluster는 Application VPC에 위치해야 하며, node name은 <instance-id>.ec2.internal로 변경합니다. Kubernetes 내부에서 사용하는 Domain을 기존 *.cluster.local에서 *.wsc2025.local로 변경합니다. ⚠️k8s 디렉토리에 있는 yaml 파일로 생성합니다.⚠️
 
 - user data script & coredns로 Kubernetes 내부 사용 도메인 변경
 
@@ -83,7 +82,7 @@ kubectl get --raw "/api/v1/nodes/NODE_NAME/proxy/configz" | jq | grep -i domain
 - Hub VPC LoadBalancer Name : wsc2025-external-nlb
 
 ## <u>12. Continuous Integration</u>
-Build 작업은 AWS CodeBuild를 통해 수행합니다. S3에 ZIP 파일이 업로드되면, 파일명에 애플리케이션에 포함된 버전 정보에 따라 ECR에 자동으로 Docker 이미지가 푸시되도록 구성해야 합니다. 예를 들어 green_1.0.0 파일이 업로드되면 ECR에는 v1.0.0 태그로, red_1.0.1이 업로드되면 v1.0.1 태그로 이미지가 푸시되어야 합니다. 애플리케이션 구분은 S3 업로드 경로의 프리픽스를 기준으로 합니다. /source/green/ 경로에 업로드된 파일은 Green 애플리케이션, /source/red/ 경로에 업로드된 파일은 Red 애플리케이션으로 간주하며, 각각 독립적인 CodeBuild 프로젝트를 통해 빌드가 수행되어야 합니다. <u>src 디렉토리에 있는 green.zip과 red.zip을 이용합니다.</u>
+Build 작업은 AWS CodeBuild를 통해 수행합니다. S3에 ZIP 파일이 업로드되면, 파일명에 애플리케이션에 포함된 버전 정보에 따라 ECR에 자동으로 Docker 이미지가 푸시되도록 구성해야 합니다. 예를 들어 green_1.0.0 파일이 업로드되면 ECR에는 v1.0.0 태그로, red_1.0.1이 업로드되면 v1.0.1 태그로 이미지가 푸시되어야 합니다. 애플리케이션 구분은 S3 업로드 경로의 프리픽스를 기준으로 합니다. /source/green/ 경로에 업로드된 파일은 Green 애플리케이션, /source/red/ 경로에 업로드된 파일은 Red 애플리케이션으로 간주하며, 각각 독립적인 CodeBuild 프로젝트를 통해 빌드가 수행되어야 합니다. ⚠️src 디렉토리에 있는 green.zip과 red.zip을 이용합니다.⚠️
 - Green CodeBuild Name: wsc2025-green-build
 - Red CodeBuild Name: wsc2025-red-build
 
