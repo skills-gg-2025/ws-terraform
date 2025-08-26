@@ -85,6 +85,7 @@ resource "aws_instance" "bastion" {
   user_data = base64encode(<<-EOF
 #!/bin/bash
 yum update -y
+yum install -y mariadb105
 yum install -y docker
 systemctl start docker
 systemctl enable docker
