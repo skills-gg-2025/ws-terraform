@@ -1,0 +1,4 @@
+appName: red
+tag: v1.0.0
+accountId: "<ACCOUNT_ID>"
+targetGroupArn: <RED_TARGET_GROUP_ARN>

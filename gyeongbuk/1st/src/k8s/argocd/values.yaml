@@ -1,0 +1,41 @@
+repoServer:
+  serviceAccount:
+    create: false
+    name: argocd-repo-server
+    
+  initContainers:
+    - name: download-tools
+      image: alpine:latest
+      command: [sh, -ec]
+      env:
+        - name: HELM_S3_VERSION
+          value: "0.15.1"
+      args:
+        - |
+          rm -rf /custom-tools/*
+          mkdir -p /custom-tools/helm-plugins
+
+          mkdir -p /custom-tools/helm-plugins/helm-s3
+          wget https://github.com/hypnoglow/helm-s3/releases/download/v${HELM_S3_VERSION}/helm-s3_${HELM_S3_VERSION}_linux_amd64.tar.gz -qO- | tar -C /custom-tools/helm-plugins/helm-s3 -xz;
+
+          
+      volumeMounts:
+        - mountPath: /custom-tools
+          name: custom-tools
+
+  env:
+    - name: HELM_PLUGINS
+      value: /custom-tools/helm-plugins/
+      
+  volumes:
+    - name: custom-tools
+      emptyDir: {}
+  volumeMounts:
+    - mountPath: /custom-tools
+      name: custom-tools
+      
+configs:
+  cm:
+    timeout.reconciliation: 30s
+  params:
+    server.insecure: true

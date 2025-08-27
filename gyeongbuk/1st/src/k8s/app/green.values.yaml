@@ -1,0 +1,4 @@
+appName: green
+tag: v1.0.0
+accountId: "<ACCOUNT_ID>"
+targetGroupArn: <GREEN_TARGET_GROUP_ARN>
