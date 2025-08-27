@@ -88,5 +88,6 @@ Build 작업은 AWS CodeBuild를 통해 수행합니다. S3에 ZIP 파일이 업
 
 ## <u>13. Pipeline</u>
 빌드와 테스트 과정을 자동화하기 위해 AWS CodePipeline을 활용합니다. 파이프라인은 S3에 새로운 버전의 애플리케이션이 업로드 되면 먼저 12번에서 생성한 CodeBuild를 통해 빌드 단계를 수행합니다. 빌드가 정상적으로 완료되면, 이어서 수동 승인 단계가 진행됩니다. 수동 승인이 완료되면, kubernetes 환경에 새로운 이미지를 가진 deployment로 배포되어야 합니다.
+⚠️ 매니페스트 파일 경로는 deployment-resolved.yaml를 사용합니다 ⚠️
 - Green CodePipeline Name: wsc2025-green-pipeline
 - Red CodePipeline Name: wsc2025-red-pipeline
