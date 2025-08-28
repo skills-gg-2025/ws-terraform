@@ -1,0 +1,24 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "secretsmanager:GetSecretValue",
+        "secretsmanager:DescribeSecret"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:ap-northeast-2:122610509788:secret:rds!db-*",
+        "arn:aws:secretsmanager:ap-northeast-2:122610509788:secret:wsk-db-url-*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "kms:Decrypt",
+        "kms:DescribeKey"
+      ],
+      "Resource": "arn:aws:kms:ap-northeast-2:122610509788:key/mrk-4b7f65ca5a504bcab6ddd0da6416a4b6"
+    }
+  ]
+}
