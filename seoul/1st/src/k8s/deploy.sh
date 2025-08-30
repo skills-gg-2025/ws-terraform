@@ -66,7 +66,7 @@ done
 # Create ServiceAccount for Secrets Manager
 echo "Creating ServiceAccount..."
 kubectl apply -f access-secrets-sa.yaml
-sleep 5
+sleep 20
 
 echo "=== Applying K8s manifests ==="
 

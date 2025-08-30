@@ -4,4 +4,4 @@ metadata:
   name: access-secrets
   namespace: wsk25
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::122610509788:role/wsk-access-secrets-role
+    eks.amazonaws.com/role-arn: arn:aws:iam::${account_id}:role/wsk-access-secrets-role

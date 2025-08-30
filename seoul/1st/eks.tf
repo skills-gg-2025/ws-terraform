@@ -103,9 +103,24 @@ resource "aws_eks_access_policy_association" "bastion_admin_policy" {
   }
 }
 
+# EKS Access Entry for Root User
+resource "aws_eks_access_entry" "root_access" {
+  cluster_name      = aws_eks_cluster.wsk_eks_cluster.name
+  principal_arn     = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+  kubernetes_groups = []
+  type              = "STANDARD"
+}
 
+resource "aws_eks_access_policy_association" "root_admin_policy" {
+  cluster_name  = aws_eks_cluster.wsk_eks_cluster.name
+  principal_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
 
-# EKS Node Group Role
+  access_scope {
+    type = "cluster"
+  }
+}
+
 resource "aws_iam_role" "wsk_eks_node_role" {
   name = "wsk-eks-node-role"
 
@@ -585,15 +600,9 @@ resource "local_file" "im_policy_json" {
 }
 
 resource "local_file" "access_secrets_sa_yaml" {
-  content = <<-EOF
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: access-secrets
-  namespace: wsk25
-  annotations:
-    eks.amazonaws.com/role-arn: ${aws_iam_role.access_secrets_role.arn}
-EOF
+  content = templatefile("${path.module}/src/k8s/access-secrets-sa.yaml.tpl", {
+    account_id = data.aws_caller_identity.current.account_id
+  })
   filename = "${path.module}/src/k8s/access-secrets-sa.yaml"
 }
 

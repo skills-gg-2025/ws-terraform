@@ -149,3 +149,42 @@ resource "aws_db_instance_automated_backups_replication" "wsk_rds_backup_replica
 
   provider = aws.us_east_1
 }
+
+# Initialize Database Tables
+resource "null_resource" "init_database" {
+  connection {
+    type        = "ssh"
+    user        = "ec2-user"
+    private_key = file("wsk-bastion-key.pem")
+    host        = aws_eip.wsk_bastion_eip.public_ip
+    port        = 2202
+  }
+
+  provisioner "file" {
+    source      = "src/day1_table_v1.sql"
+    destination = "/home/ec2-user/day1_table_v1.sql"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "echo 'Waiting for RDS to be ready...'",
+      "sleep 60",
+      "echo 'Getting RDS credentials from Secrets Manager...'",
+      "RDS_SECRET_ARN='${aws_db_instance.wsk_rds_cluster.master_user_secret[0].secret_arn}'",
+      "DB_ENDPOINT='${aws_db_instance.wsk_rds_cluster.endpoint}'",
+      "DB_PORT='${aws_db_instance.wsk_rds_cluster.port}'",
+      "echo 'Retrieving database credentials...'",
+      "DB_CREDS=$(aws secretsmanager get-secret-value --secret-id $RDS_SECRET_ARN --region ap-northeast-2 --query SecretString --output text)",
+      "DB_USER=$(echo $DB_CREDS | jq -r '.username')",
+      "DB_PASS=$(echo $DB_CREDS | jq -r '.password')",
+      "echo 'Connecting to database and creating tables...'",
+      "mysql -h $DB_ENDPOINT -P $DB_PORT -u $DB_USER -p$DB_PASS < /home/ec2-user/day1_table_v1.sql",
+      "echo 'Database initialization completed successfully!'"
+    ]
+  }
+
+  depends_on = [
+    aws_db_instance.wsk_rds_cluster,
+    aws_instance.wsk_bastion
+  ]
+}
