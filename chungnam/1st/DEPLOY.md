@@ -24,8 +24,8 @@ kubectl get --raw "/api/v1/nodes/NODE_NAME/proxy/configz" | jq | grep -i domain
 kubectl edit configmap aws-auth -n kube-system
 
 mapRoles: |
-  - rolearn: arn:aws:iam::942035140074:role/codebuild-wsc2025-service-role
-    username: build
+  - rolearn: arn:aws:iam::942035140074:role/codebuild-wsc2025-pipeline-role
+    username: pipeline
     groups:
       - system:masters
 
