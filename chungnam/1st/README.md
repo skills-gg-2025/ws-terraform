@@ -27,7 +27,7 @@ Green, Red 앱에서 사용하는 RDBMS 엔진으로 MySQL을 사용하며 데�
 - DB instance class : db.t3.medium 
 
 ## 8. Container Registry
-Registry 컨테이너 이미지 저장을 위해 ECR을 사용하도록 합니다. 바이너리 이름과 동일하게 green/v1.0.0, red/v1.0.0 , green/v1.0.1, red/v1.0.1 총 4개의 이미지를 업로드 해둡니다. 과제는 1.0.0으로 진행하고 CD pipeline 채점시 v1.0.1 이미지를 활용합니다. ⚠️어플리케이션 업로드 필요⚠️
+Registry 컨테이너 이미지 저장을 위해 ECR을 사용하도록 합니다. 바이너리 이름과 동일하게 green/v1.0.0, red/v1.0.0 , green/v1.0.1, red/v1.0.1 총 4개의 이미지를 업로드 해둡니다. 과제는 1.0.0으로 진행하고 CD pipeline 채점시 v1.0.1 이미지를 활용합니다.
 
 ## 9. S3
 애플리케이션 관련 파일들을 S3에 체계적으로 저장하여 관리합니다. /source/green 프리픽스에는 Green 애플리케이션 및 Green ECR에 푸시할 파일들을, /source/red 프리픽스에는 Red 애플리케이션 및 Red ECR에 푸시할 파일들을 각각 업로드합니다. 각 애플리케이션 및 ECR에 푸시할 파일들을 zip 파일 형태로 업로드하며, Green과 Red 각각에 대해 독립적으로 버전 및 패키지를 관리할 수 있도록 구성합니다.
@@ -88,6 +88,6 @@ Build 작업은 AWS CodeBuild를 통해 수행합니다. S3에 ZIP 파일이 업
 
 ## <u>13. Pipeline</u>
 빌드와 테스트 과정을 자동화하기 위해 AWS CodePipeline을 활용합니다. 파이프라인은 S3에 새로운 버전의 애플리케이션이 업로드 되면 먼저 12번에서 생성한 CodeBuild를 통해 빌드 단계를 수행합니다. 빌드가 정상적으로 완료되면, 이어서 수동 승인 단계가 진행됩니다. 수동 승인이 완료되면, kubernetes 환경에 새로운 이미지를 가진 deployment로 배포되어야 합니다.
-⚠️ 매니페스트 파일 경로는 deployment-resolved.yaml를 사용합니다 ⚠️
+⚠️ 매니페스트 파일 경로는   를 사용합니다 ⚠️
 - Green CodePipeline Name: wsc2025-green-pipeline
 - Red CodePipeline Name: wsc2025-red-pipeline
