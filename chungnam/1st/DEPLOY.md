@@ -35,3 +35,4 @@ kubectl get configmap aws-auth -n kube-system -o yaml
 1. 추가구성 -> 도커 권한 추가 후 빌드 생성
 2. pipeline 배포에서 아티팩트를 BuildArtifact 선택
 3. 매니페스트 파일 경로를 deployment-resolved.yaml로 설정
+4. pipeline build 스테이지 다음에 수동 승인 스테이지 추가
