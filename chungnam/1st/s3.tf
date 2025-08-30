@@ -63,14 +63,3 @@ resource "aws_s3_bucket_policy" "app_bucket_policy" {
   })
 }
 
-resource "aws_s3_object" "green_zip" {
-  bucket = aws_s3_bucket.app_bucket.id
-  key    = "source/green/green.zip"
-  source = "src/green.zip"
-}
-
-resource "aws_s3_object" "red_zip" {
-  bucket = aws_s3_bucket.app_bucket.id
-  key    = "source/red/red.zip"
-  source = "src/red.zip"
-}

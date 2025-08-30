@@ -3,7 +3,7 @@
 1. `day1_table_v1.sql`를 사용하여 테이블 생성
 ## EKS
 1. EKS 클러스터 생성
-2.  시작 템플릿 user data 변경 후 노드그룹 생성
+2.  시작 템플릿 호스트 이름 유형 리소스 이름 & user data 변경 후 노드그룹 생성
 
 ```
 [settings.kubernetes]
