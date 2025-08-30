@@ -24,8 +24,8 @@ kubectl get --raw "/api/v1/nodes/NODE_NAME/proxy/configz" | jq | grep -i domain
 kubectl edit configmap aws-auth -n kube-system
 
 mapRoles: |
-  - rolearn: arn:aws:iam::942035140074:role/codebuild-wsc2025-service-role
-    username: build
+  - rolearn: arn:aws:iam::942035140074:role/wsc2025-codepipeline-role
+    username: pipeline
     groups:
       - system:masters
 
@@ -35,3 +35,4 @@ kubectl get configmap aws-auth -n kube-system -o yaml
 1. 추가구성 -> 도커 권한 추가 후 빌드 생성
 2. pipeline 배포에서 아티팩트를 BuildArtifact 선택
 3. 매니페스트 파일 경로를 deployment-resolved.yaml로 설정
+4. pipeline build 스테이지 다음에 수동 승인 스테이지 추가
