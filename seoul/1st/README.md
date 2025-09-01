@@ -1,4 +1,4 @@
-<h1 align="center">Seoul 1ND • Solution Architecture</h1>
+<h1 align="center">Seoul 1ST • Solution Architecture</h1>
 
 <h2 align="center"> ✅ Check list (After Deploy) </h2>
 
@@ -23,3 +23,11 @@
 <h3 align="center">CD Pipeline</h3>
 
 - ❗ CD Part의 경우 ECR에 red 이미지 v1.0.1을 <u>채점 전</u> 업로드 하라고 되어있으며, v1.0.1은 미리 업로드 되기때문에 경기 종료 전 테스트 후 v1.0.1 이미지를 ECR에서 제거해야할 수 있음
+
+<h3 align="center">ArgoCD</h3>
+
+- manifast로 `k8s/green-deploy.yaml`, `k8s/red-deploy.yaml`, `k8s/green-svc.yaml`, `k8s/red-svc.yaml`, `k8s/green-ig.yaml`, `k8s/red-ig.yaml` 사용
+- `k8s/green-deploy.yaml` 및 `k8s/red-deploy.yaml` 에서 이미지 태그 부분을 `v1.0.0` -> `v1.0.1`로 변경
+- ArgoCD가 Bastion에 설치되어있어 포트포워딩(혹은 로드밸런싱) 및 인증 후 사용
+- 문제지에 명시된대로 Github Repo 생성
+- ArgoCD 콘솔 혹은 ArgoCD Application을 이용하여 배포(네임스페이스 등 변경 필요)
