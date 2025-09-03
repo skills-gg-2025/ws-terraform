@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: green-rollout
+  namespace: skills
+spec:
+  replicas: 2
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: green
+  template:
+    metadata:
+      labels:
+        app: green
+    spec:
+      terminationGracePeriodSeconds: 60
+      nodeSelector:
+        node: app
+      tolerations:
+      - key: node
+        operator: Equal
+        value: app
+        effect: NoSchedule
+      containers:
+      - name: green
+        image: 942035140074.dkr.ecr.ap-northeast-2.amazonaws.com/green:latest
+        imagePullPolicy: Always
+        envFrom:
+        - secretRef:
+            name: db-secret
+        ports:
+        - containerPort: 8080
+  strategy:
+    blueGreen:
+      activeService: green-svc
+      autoPromotionEnabled: true

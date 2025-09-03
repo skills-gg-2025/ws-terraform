@@ -1,0 +1,39 @@
+version: 0.2
+
+env:
+  variables:
+    AWS_ACCOUNT_ID: 942035140074
+    REPOSITORY_NAME: green
+
+phases:
+  install:
+    commands:
+      - echo Installing dependencies...
+      - yum install -y jq git
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - REPOSITORY_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$REPOSITORY_NAME
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      - IMAGE_TAG=$(date +%Y%m%d%H%M%S)
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image...
+      - docker build -t $REPOSITORY_URI:$IMAGE_TAG .
+      - docker push $REPOSITORY_URI:$IMAGE_TAG
+  post_build:
+    commands:
+      - echo Updating rollouts.yaml...
+      - git config --global user.email "ci@example.com"
+      - git config --global user.name "CI Bot"
+      - git clone https://$GITHUB_TOKEN@github.com/zerosugar-man/gj2025-repository.git
+      - cd gj2025-repository
+      - git checkout gitops-green
+      - "sed -i \"s|image: .*|image: $REPOSITORY_URI:$IMAGE_TAG|\" rollouts.yaml"
+      - git add rollouts.yaml
+      - git commit -m "Update image tag to $IMAGE_TAG"
+      - git push origin gitops-green
+
+artifacts:
+  files: []

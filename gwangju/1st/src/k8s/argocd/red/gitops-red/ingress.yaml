@@ -1,0 +1,31 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gj2025-app-alb-red
+  namespace: skills
+  annotations:
+    alb.ingress.kubernetes.io/load-balancer-name: gj2025-app-alb
+    alb.ingress.kubernetes.io/target-type: instance
+    alb.ingress.kubernetes.io/group.name: app
+    alb.ingress.kubernetes.io/target-node-labels: node=app
+    alb.ingress.kubernetes.io/scheme: internal
+    alb.ingress.kubernetes.io/healthcheck-path: /health
+spec:
+  ingressClassName: alb
+  rules:
+    - http:
+        paths:
+          - path: /red
+            pathType: Exact
+            backend:
+              service:
+                name: red-svc
+                port:
+                  number: 80
+          - path: /health
+            pathType: Exact
+            backend:
+              service:
+                name: red-svc
+                port:
+                  number: 80

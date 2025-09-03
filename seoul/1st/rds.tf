@@ -178,7 +178,7 @@ resource "null_resource" "init_database" {
       "DB_USER=$(echo $DB_CREDS | jq -r '.username')",
       "DB_PASS=$(echo $DB_CREDS | jq -r '.password')",
       "echo 'Connecting to database and creating tables...'",
-      "mysql -h $DB_ENDPOINT -P $DB_PORT -u $DB_USER -p$DB_PASS < /home/ec2-user/day1_table_v1.sql",
+      "mysql -h $DB_ENDPOINT -P $DB_PORT -u $DB_USER -p$DB_PASS day1< /home/ec2-user/day1_table_v1.sql",
       "echo 'Database initialization completed successfully!'"
     ]
   }
