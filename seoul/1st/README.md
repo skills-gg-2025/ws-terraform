@@ -8,6 +8,10 @@
 
 - `rds.tf`, `src/build_and_push.sh`, `src/k8s/deploy.sh` 파일 시퀸스가 **CRLF**인 경우 이를 **LF**로 수정 필요
 
+- ❗ 만약 문제 발생 후 모든 리소스를 지우고 재시도 시, 기존 Terraform 상태 파일 등(`terraform init`으로 생성되는 파일)을 재 생성하지 않으면 remote-exec이 정상적으로 작동하지 않을 가능성이 있음
+
+- ❗ 만약 문제 발생 후 모든 리소스를 지우고 재시도 시, DB_URL이 저장된 Secret Manager를 삭제하지 않는다면 정상 배포 불가
+
 <h3 align="center">RDS</h3>
 
 - ❗ 자동으로 테이블이 생성되지 않기때문에 Bastion Host에 연결하여 직접 MySQL에 접근 후 `day1_table_v1.sql`source 필요
