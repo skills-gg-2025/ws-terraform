@@ -1,0 +1,14 @@
+configs:
+  cm:
+    timeout.reconciliation: 30s
+  params:
+    server.insecure: true
+
+server:
+  service:
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-name: wsc2025-argo-external-nlb
+      service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: instance
+      service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    type: LoadBalancer
+    loadBalancerClass: service.k8s.aws/nlb

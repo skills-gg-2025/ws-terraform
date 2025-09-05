@@ -27,7 +27,7 @@ phases:
       - echo Updating rollouts.yaml...
       - git config --global user.email "ci@example.com"
       - git config --global user.name "CI Bot"
-      - git clone https://$GITHUB_TOKEN@github.com/zerosugar-man/gj2025-repository.git
+      - git clone https://$GITHUB_TOKEN@github.com/github-user-name/gj2025-repository.git
       - cd gj2025-repository
       - git checkout gitops-green
       - "sed -i \"s|image: .*|image: $REPOSITORY_URI:$IMAGE_TAG|\" rollouts.yaml"
