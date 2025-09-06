@@ -101,6 +101,12 @@ resource "aws_instance" "wsc2025_instance" {
     curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
     mv /tmp/eksctl /usr/local/bin
     
+    # Install GitHub CLI and Git
+    type -p yum-config-manager >/dev/null || yum install -y yum-utils
+    yum-config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo
+    yum install -y gh
+    yum install -y git
+    
     # Create directories
     mkdir -p /home/ec2-user/k8s_file
     chown -R ec2-user:ec2-user /home/ec2-user/k8s_file
