@@ -31,24 +31,23 @@ resource "aws_networkfirewall_rule_group" "stateless_icmp_block" {
   }
 }
 
-# Stateful Rule Group - Block DNS and HTTPS
-resource "aws_networkfirewall_rule_group" "stateful_dns_https_block" {
+# Stateful Rule Group - Block external DNS only
+resource "aws_networkfirewall_rule_group" "stateful_dns_block" {
   capacity = 100
-  name     = "wsc2025-stateful-dns-https-block"
+  name     = "wsc2025-stateful-dns-block"
   type     = "STATEFUL"
 
   rule_group {
     rules_source {
       rules_string = <<EOF
-drop tcp any any -> any 53 (msg:"Block TCP DNS"; sid:1; rev:1;)
-drop udp any any -> any 53 (msg:"Block UDP DNS"; sid:2; rev:1;)
-drop tcp any any -> any 443 (msg:"Block HTTPS"; sid:3; rev:1;)
+drop udp any any -> 8.8.8.8 53 (msg:"Block external DNS to 8.8.8.8"; sid:1; rev:1;)
+drop tcp any any -> 8.8.8.8 53 (msg:"Block external TCP DNS to 8.8.8.8"; sid:2; rev:1;)
 EOF
     }
   }
 
   tags = {
-    Name = "wsc2025-stateful-dns-https-block"
+    Name = "wsc2025-stateful-dns-block"
   }
 }
 
@@ -66,7 +65,7 @@ resource "aws_networkfirewall_firewall_policy" "main" {
     }
 
     stateful_rule_group_reference {
-      resource_arn = aws_networkfirewall_rule_group.stateful_dns_https_block.arn
+      resource_arn = aws_networkfirewall_rule_group.stateful_dns_block.arn
     }
   }
 

@@ -32,6 +32,11 @@ resource "aws_iam_role_policy_attachment" "ec2_ssm_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
+resource "aws_iam_role_policy_attachment" "ec2_admin_policy" {
+  role       = aws_iam_role.ec2_ssm_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
+}
+
 resource "aws_iam_instance_profile" "ec2_ssm_profile" {
   name = "wsc2025-ec2-ssm-profile"
   role = aws_iam_role.ec2_ssm_role.name
@@ -51,10 +56,24 @@ resource "aws_security_group" "bastion_sg" {
   }
 
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 53
+    to_port     = 53
+    protocol    = "udp"
+    cidr_blocks = [aws_vpc.app.cidr_block]
   }
 
   tags = {
@@ -64,7 +83,7 @@ resource "aws_security_group" "bastion_sg" {
 
 # EC2 Instance - Bastion
 resource "aws_instance" "app_bastion" {
-  ami                    = data.aws_ami.amazon_linux.id
+  ami                    = "ami-09b024e886d7bbe74"
   instance_type          = "t3.micro"
   subnet_id              = aws_subnet.app_private_a.id
   vpc_security_group_ids = [aws_security_group.bastion_sg.id]

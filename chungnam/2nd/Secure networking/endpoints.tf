@@ -38,6 +38,32 @@ resource "aws_vpc_endpoint" "ec2messages" {
   }
 }
 
+resource "aws_vpc_endpoint" "ec2" {
+  vpc_id              = aws_vpc.app.id
+  service_name        = "com.amazonaws.eu-west-1.ec2"
+  vpc_endpoint_type   = "Interface"
+  subnet_ids          = [aws_subnet.app_private_a.id, aws_subnet.app_private_b.id]
+  security_group_ids  = [aws_security_group.vpc_endpoint_sg.id]
+  private_dns_enabled = true
+
+  tags = {
+    Name = "wsc2025-ec2-endpoint"
+  }
+}
+
+resource "aws_vpc_endpoint" "network_firewall" {
+  vpc_id              = aws_vpc.app.id
+  service_name        = "com.amazonaws.eu-west-1.network-firewall"
+  vpc_endpoint_type   = "Interface"
+  subnet_ids          = [aws_subnet.app_private_a.id, aws_subnet.app_private_b.id]
+  security_group_ids  = [aws_security_group.vpc_endpoint_sg.id]
+  private_dns_enabled = true
+
+  tags = {
+    Name = "wsc2025-network-firewall-endpoint"
+  }
+}
+
 # Security Group for VPC Endpoints
 resource "aws_security_group" "vpc_endpoint_sg" {
   name        = "wsc2025-vpc-endpoint-sg"
