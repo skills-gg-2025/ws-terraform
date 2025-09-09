@@ -1,1 +1,0 @@
-ssh-keygen -t rsa -b 2048 -f dns-bastion-key -N ""
