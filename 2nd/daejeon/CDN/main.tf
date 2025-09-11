@@ -35,7 +35,7 @@ resource "aws_s3_object" "mp4_files" {
 # CloudFront Origin Access Control
 resource "aws_cloudfront_origin_access_control" "drm_oac" {
   name                              = "web-drm-oac"
-  description                       = "OAC for DRM bucket"
+  description                       = "web-drm-oac"
   origin_access_control_origin_type = "s3"
   signing_behavior                  = "always"
   signing_protocol                  = "sigv4"
@@ -124,7 +124,7 @@ resource "aws_cloudfront_function" "web_cdn_function" {
 # Cache Policy for DRM
 resource "aws_cloudfront_cache_policy" "drm_cache_policy" {
   name        = "drm-cache-policy"
-  comment     = "Cache policy for DRM content"
+  comment     = "drm-cache-policy"
   default_ttl = 60
   max_ttl     = 60
   min_ttl     = 0
