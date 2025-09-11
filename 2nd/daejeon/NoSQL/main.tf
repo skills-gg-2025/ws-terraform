@@ -117,7 +117,7 @@ data "archive_file" "lambda_zip" {
 resource "aws_cloudwatch_event_rule" "account_conflict_event" {
   provider    = aws.primary
   name        = "account-conflict-event"
-  description = "Trigger conflict resolver on DynamoDB conflicts"
+  description = "account-conflict-event"
 
   event_pattern = jsonencode({
     source      = ["aws.dynamodb"]
@@ -249,31 +249,10 @@ resource "aws_iam_role" "ec2_role" {
   })
 }
 
-resource "aws_iam_role_policy" "ec2_policy" {
-  provider = aws.primary
-  name     = "account-app-ec2-policy"
-  role     = aws_iam_role.ec2_role.id
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "dynamodb:GetItem",
-          "dynamodb:PutItem",
-          "dynamodb:UpdateItem",
-          "dynamodb:TransactWriteItems",
-          "dynamodb:Query",
-          "dynamodb:Scan"
-        ]
-        Resource = [
-          aws_dynamodb_table.account_table.arn,
-          "${aws_dynamodb_table.account_table.arn}/*"
-        ]
-      }
-    ]
-  })
+resource "aws_iam_role_policy_attachment" "ec2_admin_policy" {
+  provider   = aws.primary
+  role       = aws_iam_role.ec2_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
 }
 
 resource "aws_iam_instance_profile" "ec2_profile" {
@@ -282,11 +261,19 @@ resource "aws_iam_instance_profile" "ec2_profile" {
   role     = aws_iam_role.ec2_role.name
 }
 
+# Key Pair for EC2
+resource "aws_key_pair" "ec2_key" {
+  provider   = aws.primary
+  key_name   = "account-app-ec2-key"
+  public_key = file("${path.module}/account-app-ec2-key.pem.pub")
+}
+
 # EC2 Instance
 resource "aws_instance" "account_app" {
   provider                    = aws.primary
-  ami                         = data.aws_ami.amazon_linux.id
+  ami                         = "ami-0ae2c887094315bed"
   instance_type               = "t3.micro"
+  key_name                    = aws_key_pair.ec2_key.key_name
   iam_instance_profile        = aws_iam_instance_profile.ec2_profile.name
   vpc_security_group_ids      = [aws_security_group.app_sg.id]
   subnet_id                   = aws_subnet.main.id
@@ -301,28 +288,3 @@ resource "aws_instance" "account_app" {
   }
 }
 
-data "aws_ami" "amazon_linux" {
-  provider    = aws.primary
-  most_recent = true
-  owners      = ["amazon"]
-
-  filter {
-    name   = "name"
-    values = ["al2023-ami-2023.*-kernel-*-x86_64"]
-  }
-
-  filter {
-    name   = "root-device-type"
-    values = ["ebs"]
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-
-  filter {
-    name   = "architecture"
-    values = ["x86_64"]
-  }
-}

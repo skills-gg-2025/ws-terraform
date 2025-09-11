@@ -22,3 +22,8 @@ output "api_endpoint" {
   description = "API endpoint URL"
   value       = "http://${aws_instance.account_app.public_ip}:8080"
 }
+
+output "ssh_command" {
+  description = "SSH command to connect to EC2 instance"
+  value       = "ssh -i account-app-ec2-key.pem ec2-user@${aws_instance.account_app.public_ip}"
+}
