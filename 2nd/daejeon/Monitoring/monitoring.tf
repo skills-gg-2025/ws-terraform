@@ -19,6 +19,8 @@ resource "aws_cloudwatch_dashboard" "app_dashboard" {
           stat   = "Sum"
           region = "ap-southeast-1"
           title  = "wsi-success"
+          view   = "timeSeries"
+          stacked = true
         }
       },
       # wsi-fail Widget
@@ -36,6 +38,8 @@ resource "aws_cloudwatch_dashboard" "app_dashboard" {
           stat   = "Sum"
           region = "ap-southeast-1"
           title  = "wsi-fail"
+          view   = "timeSeries"
+          stacked = true
         }
       },
       # wsi-sli Widget (Success Rate Gauge)
@@ -81,7 +85,7 @@ resource "aws_cloudwatch_dashboard" "app_dashboard" {
           region  = "ap-southeast-1"
           title   = "wsi-p90-p96-p99"
           view    = "timeSeries"
-          stacked = false
+          stacked = true
         }
       }
     ]
