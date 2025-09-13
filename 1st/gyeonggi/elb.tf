@@ -46,17 +46,17 @@ resource "aws_lb" "app_nlb" {
   load_balancer_type = "network"
 
   subnet_mapping {
-    subnet_id = aws_subnet.app_pri_a.id
+    subnet_id            = aws_subnet.app_pri_a.id
     private_ipv4_address = "10.200.20.100"
   }
 
   subnet_mapping {
-    subnet_id = aws_subnet.app_pri_b.id
+    subnet_id            = aws_subnet.app_pri_b.id
     private_ipv4_address = "10.200.21.100"
   }
 
   subnet_mapping {
-    subnet_id = aws_subnet.app_pri_c.id
+    subnet_id            = aws_subnet.app_pri_c.id
     private_ipv4_address = "10.200.22.100"
   }
 
@@ -141,11 +141,12 @@ resource "aws_security_group" "alb_sg" {
 
 # ALB Target Groups for Green and Red
 resource "aws_lb_target_group" "green_primary" {
-  name        = "ws25-green-primary-tg"
-  port        = 80
-  protocol    = "HTTP"
-  target_type = "instance"
-  vpc_id      = aws_vpc.app_vpc.id
+  name                 = "ws25-green-primary-tg"
+  port                 = 80
+  protocol             = "HTTP"
+  target_type          = "instance"
+  vpc_id               = aws_vpc.app_vpc.id
+  deregistration_delay = 10
 
   health_check {
     enabled             = true
@@ -165,11 +166,12 @@ resource "aws_lb_target_group" "green_primary" {
 }
 
 resource "aws_lb_target_group" "green_sub" {
-  name        = "ws25-green-sub-tg"
-  port        = 80
-  protocol    = "HTTP"
-  target_type = "instance"
-  vpc_id      = aws_vpc.app_vpc.id
+  name                 = "ws25-green-sub-tg"
+  port                 = 80
+  protocol             = "HTTP"
+  target_type          = "instance"
+  vpc_id               = aws_vpc.app_vpc.id
+  deregistration_delay = 10
 
   health_check {
     enabled             = true
@@ -189,11 +191,12 @@ resource "aws_lb_target_group" "green_sub" {
 }
 
 resource "aws_lb_target_group" "red_primary" {
-  name        = "ws25-red-primary-tg"
-  port        = 80
-  protocol    = "HTTP"
-  target_type = "ip"
-  vpc_id      = aws_vpc.app_vpc.id
+  name                 = "ws25-red-primary-tg"
+  port                 = 80
+  protocol             = "HTTP"
+  target_type          = "ip"
+  vpc_id               = aws_vpc.app_vpc.id
+  deregistration_delay = 10
 
   health_check {
     enabled             = true
@@ -213,11 +216,12 @@ resource "aws_lb_target_group" "red_primary" {
 }
 
 resource "aws_lb_target_group" "red_sub" {
-  name        = "ws25-red-sub-tg"
-  port        = 80
-  protocol    = "HTTP"
-  target_type = "ip"
-  vpc_id      = aws_vpc.app_vpc.id
+  name                 = "ws25-red-sub-tg"
+  port                 = 80
+  protocol             = "HTTP"
+  target_type          = "ip"
+  vpc_id               = aws_vpc.app_vpc.id
+  deregistration_delay = 10
 
   health_check {
     enabled             = true

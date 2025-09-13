@@ -311,8 +311,8 @@ resource "aws_ecs_task_definition" "green" {
 
   container_definitions = jsonencode([
     {
-      name  = "green"
-      image = "${aws_ecr_repository.green.repository_url}:v1.0.0"
+      name      = "green"
+      image     = "${aws_ecr_repository.green.repository_url}:v1.0.0"
       essential = true
 
       portMappings = [
@@ -406,8 +406,8 @@ resource "aws_ecs_task_definition" "red" {
 
   container_definitions = jsonencode([
     {
-      name  = "red"
-      image = "${aws_ecr_repository.red.repository_url}:v1.0.0"
+      name      = "red"
+      image     = "${aws_ecr_repository.red.repository_url}:v1.0.0"
       essential = true
 
       portMappings = [

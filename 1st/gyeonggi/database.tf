@@ -87,7 +87,7 @@ resource "aws_rds_cluster" "aurora_cluster" {
   vpc_security_group_ids          = [aws_security_group.aurora_sg.id]
   storage_encrypted               = true
   kms_key_id                      = aws_kms_key.rds_key.arn
-  enabled_cloudwatch_logs_exports = ["audit", "error", "general", "slowquery"]
+  enabled_cloudwatch_logs_exports = ["audit", "error", "general", "instance"]
   performance_insights_enabled    = true
   performance_insights_kms_key_id = aws_kms_key.rds_key.arn
   skip_final_snapshot             = true
