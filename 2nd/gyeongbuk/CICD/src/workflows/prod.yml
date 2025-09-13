@@ -1,0 +1,114 @@
+name: prod-auto-deploy
+
+on:
+  pull_request:
+    branches: [ prod ]
+    types: [labeled]
+
+jobs:
+  build-and-deploy:
+    if: contains(github.event.pull_request.labels.*.name, 'approval')
+    runs-on: [self-hosted, prod]
+
+    permissions:
+      contents: write
+      pull-requests: write
+      id-token: write
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Set outputs
+      id: vars
+      run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+    - name: Install GitHub CLI
+      run: |
+        (type -p wget >/dev/null || (sudo apt update && sudo apt install wget -y)) \
+        && sudo mkdir -p -m 755 /etc/apt/keyrings \
+        && out=$(mktemp) && wget -nv -O$out https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+        && cat $out | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
+        && sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+        && sudo mkdir -p -m 755 /etc/apt/sources.list.d \
+        && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+        && sudo apt update \
+        && sudo apt install gh -y
+
+    - name: Auto-merge PR
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        gh pr merge ${{ github.event.pull_request.number }} --merge --auto
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+        aws-region: eu-central-1
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build and push Docker image (cache enabled)
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: product/prod
+        IMAGE_TAG: ${{ steps.vars.outputs.sha_short }}
+      run: |
+        docker buildx build \
+          --platform linux/amd64,linux/arm64 \
+          --cache-from type=registry,ref=$ECR_REGISTRY/$ECR_REPOSITORY:initial \
+          --cache-to type=registry,ref=$ECR_REGISTRY/$ECR_REPOSITORY:cache,mode=max \
+          --push \
+          -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
+          .
+
+    - name: Update values file & push
+      env:
+        IMAGE_TAG: ${{ steps.vars.outputs.sha_short }}
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      run: |
+        sed -i "s|tag:.*|tag: \"$IMAGE_TAG\"|g" values/prod.values.yaml
+        sed -i "s|repository:.*|repository: \"$ECR_REGISTRY/product/prod\"|g" values/prod.values.yaml
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add values/prod.values.yaml
+        git commit -m "Update prod image tag to $IMAGE_TAG" || exit 0
+        git push origin prod
+
+    - name: Fast-forward dev branch
+      run: |
+        git fetch origin dev
+        git checkout dev
+        git merge --ff-only prod
+        git push origin dev
+        git checkout prod
+
+    - name: Install ArgoCD CLI
+      run: |
+        curl -sSL -o argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+        chmod +x argocd
+        sudo mv argocd /usr/local/bin/
+
+    - name: ArgoCD Login
+      env:
+        ARGOCD_SERVER: ${{ secrets.ARGOCD_SERVER }}
+        ARGOCD_USERNAME: ${{ secrets.ARGOCD_USERNAME }}
+        ARGOCD_PASSWORD: ${{ secrets.ARGOCD_PASSWORD }}
+      run: |
+        argocd login $ARGOCD_SERVER \
+          --username $ARGOCD_USERNAME \
+          --password $ARGOCD_PASSWORD \
+          --plaintext
+
+    - name: Sync Application
+      run: |
+        argocd app sync prod --retry-count 3 --timeout 180
+        argocd app wait prod --timeout 300

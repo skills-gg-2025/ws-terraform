@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  app:
+  - apiVersion: v2
+    appVersion: "1.0"
+    created: "2025-09-13T00:53:05.740632+09:00"
+    description: A Helm chart for product application
+    digest: a88ebac5ebafa8b12bbe52c52c473ec847b8e7fbd7423bbe00866dae00ed64e7
+    name: app
+    type: application
+    urls:
+    - app-0.1.0.tgz
+    version: 0.1.0
+generated: "2025-09-13T00:53:05.74039+09:00"

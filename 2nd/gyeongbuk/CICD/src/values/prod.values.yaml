@@ -1,0 +1,4 @@
+environment: prod
+image:
+  name: <ACCOUNT_ID>.dkr.ecr.eu-central-1.amazonaws.com/product/prod
+  tag: initial

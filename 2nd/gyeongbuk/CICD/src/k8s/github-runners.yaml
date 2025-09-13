@@ -1,0 +1,41 @@
+apiVersion: actions.summerwind.dev/v1alpha1
+kind: RunnerDeployment
+metadata:
+  name: dev-runner
+  namespace: app
+spec:
+  replicas: 2
+  template:
+    spec:
+      repository: YOUR_USERNAME/day2-product
+      labels:
+        - dev
+      image: summerwind/actions-runner:latest
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi
+---
+apiVersion: actions.summerwind.dev/v1alpha1
+kind: RunnerDeployment
+metadata:
+  name: prod-runner
+  namespace: app
+spec:
+  replicas: 2
+  template:
+    spec:
+      repository: YOUR_USERNAME/day2-product
+      labels:
+        - prod
+      image: summerwind/actions-runner:latest
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi
