@@ -4,9 +4,23 @@ resource "aws_s3_bucket" "green_artifacts" {
   force_destroy = true
 }
 
+resource "aws_s3_bucket_versioning" "green_versioning" {
+  bucket = aws_s3_bucket.green_artifacts.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
 resource "aws_s3_bucket" "red_artifacts" {
   bucket        = "ws25-cd-red-artifact-${var.number}"
   force_destroy = true
+}
+
+resource "aws_s3_bucket_versioning" "red_versioning" {
+  bucket = aws_s3_bucket.red_artifacts.id
+  versioning_configuration {
+    status = "Enabled"
+  }
 }
 
 # S3 Bucket Notifications
@@ -102,90 +116,15 @@ data "aws_iam_policy_document" "codedeploy_ecs" {
   }
 }
 
-data "aws_iam_policy_document" "source_s3" {
-  statement {
-    effect = "Allow"
-
-    resources = [
-      "${aws_s3_bucket.green_artifacts.arn}",
-      "${aws_s3_bucket.green_artifacts.arn}/*",
-      "${aws_s3_bucket.red_artifacts.arn}",
-      "${aws_s3_bucket.red_artifacts.arn}/*",
-    ]
-
-    actions = [
-      "s3:GetObject",
-      "s3:GetObjectVersion",
-      "s3:GetBucketVersioning",
-      "s3:GetBucketAcl",
-      "s3:GetBucketLocation",
-      "s3:GetObjectTagging",
-      "s3:GetObjectVersionTagging",
-    ]
-
-    condition {
-      test     = "StringEquals"
-      variable = "aws:ResourceAccount"
-      values   = [data.aws_caller_identity.current.account_id]
-    }
-  }
-}
-
-data "aws_iam_policy_document" "pipeline_s3" {
-  statement {
-    sid       = "AllowS3BucketAccess"
-    effect    = "Allow"
-    resources = ["arn:aws:s3:::codepipeline-${data.aws_region.current.region}-*"]
-
-    actions = [
-      "s3:GetBucketVersioning",
-      "s3:GetBucketAcl",
-      "s3:GetBucketLocation",
-    ]
-
-    condition {
-      test     = "StringEquals"
-      variable = "aws:ResourceAccount"
-      values   = [data.aws_caller_identity.current.account_id]
-    }
-  }
-
-  statement {
-    sid       = "AllowS3ObjectAccess"
-    effect    = "Allow"
-    resources = ["arn:aws:s3:::codepipeline-${data.aws_region.current.region}-*"]
-
-    actions = [
-      "s3:PutObject",
-      "s3:PutObjectAcl",
-      "s3:GetObject",
-      "s3:GetObjectVersion",
-    ]
-
-    condition {
-      test     = "StringEquals"
-      variable = "aws:ResourceAccount"
-      values   = [data.aws_caller_identity.current.account_id]
-    }
-  }
-}
-
 resource "aws_iam_role_policy" "codepipeline_ecs" {
   name   = "codedeploy_ecs_policy"
-  role   = aws_iam_role.codepipeline_role.id
+  role   = aws_iam_role.codepipeline_role.name
   policy = data.aws_iam_policy_document.codedeploy_ecs.json
 }
 
-resource "aws_iam_role_policy" "source_s3" {
-  name   = "source_s3_policy"
-  role   = aws_iam_role.codepipeline_role.id
-  policy = data.aws_iam_policy_document.source_s3.json
-}
-
-resource "aws_iam_role_policy" "pipeline_s3" {
-  name   = "pipeline_s3_policy"
-  role   = aws_iam_role.codepipeline_role.id
-  policy = data.aws_iam_policy_document.pipeline_s3.json
+resource "aws_iam_role_policy_attachment" "S3FullAccess" {
+  role       = aws_iam_role.codepipeline_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
 }
 
 # IAM Role for CodeDeploy
