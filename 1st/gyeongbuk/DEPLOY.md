@@ -11,7 +11,9 @@
 1. EKS 연결 및 환경변수 설정을 합니다.
 2. CoreDNS를 재시작합니다. (Fargate Node 미사용 시)
 3. skills Namespace를 생성합니다.
-4. Container Insights, AWS Load Balancer Controller, External Secrets Operator, Fluent Bit를 설치합니다.
+4. Container Insights, AWS Load Balancer Controller, External Secrets Operator를 설치합니다.
+5. ArgoCD 등 애플리케이션 배포가 끝난 후 Fluent Bit 설정을 합니다.
+6. 채점을 위해 v1.0.1 binary를 사용하는 Dockerfile을 /home/ec2-user/images 폴더 아래의 green, red 폴더 하위에 각각 위치하도록 합니다.
 
 ### ArgoCD
 1. ServiceAccount를 생성합니다.
