@@ -7,7 +7,7 @@
 4. 채점 시 KeyPair를 통해 접근할 것입니다. 채점 전 키페어의 권한이 적절한지 확인해야 합니다.
 
 ## B. EKS(K8S)
-1. ⚠️ **반드시 시작 전** `./src/k8s/deploy.sh`의 106번 째 라인의 Resource 값을 RDS Secret Manager의 ARN으로 수정해야 합니다. (8-2-A에서 감점될 수 있습니다)
+1. ⚠️ **반드시 배포 후** 고객 관리형 정책, `secretsmanager-policy`의 Resources Value를 `gj2025-eks-cluster-catalog-secret`로 설정해야 합니다. (8-2-A에서 감점될 수 있습니다)
 2. 모든 구성이 끝난 후, `kubectl delete pods proxy-test` 명령을 통해 채점이 원활하게 진행될 수 있도록 합니다.
 
 ## C. GitHub
