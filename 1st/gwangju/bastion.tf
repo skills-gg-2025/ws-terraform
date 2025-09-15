@@ -1,32 +1,6 @@
-# Generate TLS private key
-resource "tls_private_key" "main" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
-
-# Key Pair for EC2 instances
-resource "aws_key_pair" "main" {
-  key_name   = "gj2025-keypair"
-  public_key = tls_private_key.main.public_key_openssh
-
-  tags = {
-    Name = "gj2025-keypair"
-  }
-}
-
-# Save private key to local file
-resource "local_file" "private_key" {
-  content  = tls_private_key.main.private_key_pem
-  filename = "gj2025-keypair.pem"
-  file_permission = "0600"
-}
-
 # Elastic IP for Bastion Server
 resource "aws_eip" "bastion" {
   domain = "vpc"
-  tags = {
-    Name = "gj2025-bastion-eip"
-  }
 }
 
 # Security Group for Bastion Server
@@ -34,13 +8,6 @@ resource "aws_security_group" "bastion" {
   name        = "gj2025-bastion-sg"
   description = "Security group for bastion server"
   vpc_id      = aws_vpc.hub.id
-
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
 
   ingress {
     from_port   = 2222
@@ -108,13 +75,14 @@ resource "aws_instance" "bastion" {
   iam_instance_profile        = aws_iam_instance_profile.bastion.name
   key_name                    = aws_key_pair.main.key_name
   associate_public_ip_address = true
+  private_ip                  = "10.0.0.254"
 
-  user_data = base64encode(<<-EOF
+  user_data_base64 = base64encode(<<-EOF
 #!/bin/bash
 sed -i 's/#Port 22/Port 2222/' /etc/ssh/sshd_config
 systemctl restart sshd
 yum update -y
-yum install -y git
+yum install -y git jq
 yum install -y httpd-tools
 yum install -y mariadb105
 yum install -y docker
@@ -130,6 +98,7 @@ chmod 700 get_helm.sh
 ./get_helm.sh
 curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
 mv /tmp/eksctl /usr/local/bin
+echo "bastion-ready" > /tmp/bastion-setup-complete
 EOF
   )
 
@@ -142,4 +111,61 @@ EOF
 resource "aws_eip_association" "bastion" {
   instance_id   = aws_instance.bastion.id
   allocation_id = aws_eip.bastion.id
+}
+
+# Copy k8s files to bastion
+resource "null_resource" "copy_k8s_files" {
+  depends_on = [aws_eip_association.bastion]
+  
+  provisioner "remote-exec" {
+    inline = [
+      "echo 'Waiting for bastion setup to complete...'",
+      "while [ ! -f /tmp/bastion-setup-complete ]; do",
+      "  echo 'Bastion setup still in progress...'",
+      "  sleep 10",
+      "done",
+      "echo 'Bastion setup completed!'"
+    ]
+    
+    connection {
+      type        = "ssh"
+      user        = "ec2-user"
+      private_key = file("./gj2025-key.pem")
+      host        = aws_eip.bastion.public_ip
+      port        = 2222
+      timeout     = "8m"
+    }
+  }
+  
+  provisioner "file" {
+    source      = "${path.module}/src/k8s"
+    destination = "/tmp"
+    
+    connection {
+      type        = "ssh"
+      user        = "ec2-user"
+      private_key = file("./gj2025-key.pem")
+      host        = aws_eip.bastion.public_ip
+      port        = 2222
+      timeout     = "8m"
+    }
+  }
+  
+  provisioner "file" {
+    source      = "${path.module}/src/day1_table_v1.sql"
+    destination = "/tmp/day1_table_v1.sql"
+    
+    connection {
+      type        = "ssh"
+      user        = "ec2-user"
+      private_key = file("./gj2025-key.pem")
+      host        = aws_eip.bastion.public_ip
+      port        = 2222
+      timeout     = "8m"
+    }
+  }
+  
+  triggers = {
+    always_run = timestamp()
+  }
 }

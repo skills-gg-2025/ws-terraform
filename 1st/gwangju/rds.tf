@@ -29,10 +29,10 @@ resource "aws_security_group" "rds_proxy" {
   vpc_id      = aws_vpc.app.id
 
   ingress {
-    from_port       = 3306
-    to_port         = 3306
-    protocol        = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port   = 3306
+    to_port     = 3306
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/16", "192.168.0.0/16"]
   }
 
   tags = {
@@ -45,13 +45,6 @@ resource "aws_security_group" "rds" {
   name        = "gj2025-rds-sg"
   description = "Security group for RDS instance"
   vpc_id      = aws_vpc.app.id
-  
-  ingress {
-    from_port   = 3309
-    to_port     = 3309
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
 
   egress {
     from_port   = 0
@@ -63,6 +56,16 @@ resource "aws_security_group" "rds" {
   tags = {
     Name = "gj2025-rds-sg"
   }
+}
+
+# RDS ingress rule from RDS Proxy
+resource "aws_security_group_rule" "rds_ingress_from_proxy" {
+  type                     = "ingress"
+  from_port                = 3309
+  to_port                  = 3309
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.rds_proxy.id
+  security_group_id        = aws_security_group.rds.id
 }
 
 # Allow all outbound traffic for RDS Proxy

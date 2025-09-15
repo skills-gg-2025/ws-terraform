@@ -2,15 +2,15 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.0"
-    }
-    tls = {
-      source  = "hashicorp/tls"
-      version = "~> 4.0"
+      version = "~> 6.0"
     }
     local = {
       source  = "hashicorp/local"
       version = "~> 2.0"
+    }
+    null = {
+      source  = "hashicorp/null"
+      version = "~> 3.0"
     }
   }
 }
@@ -22,6 +22,16 @@ provider "aws" {
 # Data source for availability zones
 data "aws_availability_zones" "available" {
   state = "available"
+}
+
+# Key Pair for EC2 instances
+resource "aws_key_pair" "main" {
+  key_name   = "gj2025-key"
+  public_key = file("./gj2025-key.pem.pub")
+
+  tags = {
+    Name = "gj2025-key"
+  }
 }
 
 # Hub VPC
@@ -154,9 +164,6 @@ resource "aws_subnet" "app_data_b" {
 # NAT Gateway
 resource "aws_eip" "nat" {
   domain = "vpc"
-  tags = {
-    Name = "gj2025-hub-ngw-eip"
-  }
 }
 
 resource "aws_nat_gateway" "hub" {
@@ -172,7 +179,7 @@ resource "aws_nat_gateway" "hub" {
 
 # Transit Gateway
 resource "aws_ec2_transit_gateway" "main" {
-  description = "Transit Gateway for hub-spoke architecture"
+  description = "gj2025-tgw"
   default_route_table_association = "disable"
   default_route_table_propagation = "disable"
 
