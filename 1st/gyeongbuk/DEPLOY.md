@@ -10,6 +10,9 @@
 ## Kubernetes
 1. EKS 연결 및 환경변수 설정을 합니다.
 2. CoreDNS를 재시작합니다. (Fargate Node 미사용 시)
+```
+kubectl delete pods -n kube-system -l k8s-app=kube-dns
+```
 3. skills Namespace를 생성합니다.
 4. Container Insights, AWS Load Balancer Controller, External Secrets Operator를 설치합니다.
 5. ArgoCD 등 애플리케이션 배포가 끝난 후 Fluent Bit 설정을 합니다.
