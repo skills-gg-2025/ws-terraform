@@ -1,19 +1,11 @@
-# Gyeonggi
+<h1 align="center">Deploying Gyeonggi 1st task</h1>
 
-## Day 1
-- Solution Architecture
+## A. 유의 사항
+1. ❗ **배포 전** Host 환경에 Docker 설치가 필요합니다.
+2. `day1_table_v1.sql`을 통해 Aurora의 테이블을 삽입할 필요가 없습니다.
+3.  채점 시 KeyPair를 통해 접근할 것입니다. 채점 전 키페어의 권한이 적절한지 확인해야 합니다.
+4. `terraform.tfvars`에서 비번호, Aurora 마스터 사용자 이름, 비밀번호를 설정해야합니다.
 
-### ✅ Terraform 배포 이후 체크 리스트
-
-- ℹ️ `Bastion을 이용해 MySQL 테이블 생성`
-    - src/day1_table_v1.sql 파일을 이용합니다.
-- ℹ️ `Container Insights "대시보드에 추가" 기능 사용`
-- ℹ️ `Bastion CI/CD 환경 구성하기 (디렉토리만 생성됩니다.)`
-    - src/artifact -> /home/ec2-user/pipeline/artifact
-    - imageDetail.json : <ACCOUNT_ID> 변경
-    - taskdef.json
-        1. 각 애플리케이션마다 생성된 task definition 이동
-        2. JSON -> AWS CLI 입력 다운로드 클릭
-        3. containerDefinitions[0].image 부분을 "<GREEN_IMAGE>" 혹은 "<RED_IMAGE>"로 대체
-    - src/green.sh -> /home/ec2-user/pipeline/green.sh (<비번호> 변경)
-    - src/red.sh -> /home/ec2-user/pipeline/red.sh (<비번호> 변경)
+## B. Monitoring
+1. Container Insights의 `대시보드에 추가` 기능을 사용 해 대시보드에 추가 후, 저장합니다.
+2. Green, Red API를 여러 번 호출하여 지표의 값과 경보 상태가 변화하는지  확인합니다. 
