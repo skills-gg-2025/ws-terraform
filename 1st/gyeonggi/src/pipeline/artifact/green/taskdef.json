@@ -1,0 +1,134 @@
+{
+    "containerDefinitions": [
+        {
+            "name": "green",
+            "image": "<GREEN_IMAGE>",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "containerPort": 8080,
+                    "hostPort": 0,
+                    "protocol": "tcp"
+                }
+            ],
+            "essential": true,
+            "environment": [],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "secrets": [
+                {
+                    "name": "DB_USER",
+                    "valueFrom": "<SECRET_ARN>:DB_USER::"
+                },
+                {
+                    "name": "DB_PASSWD",
+                    "valueFrom": "<SECRET_ARN>:DB_PASSWD::"
+                },
+                {
+                    "name": "DB_URL",
+                    "valueFrom": "<SECRET_ARN>:DB_URL::"
+                }
+            ],
+            "dependsOn": [
+                {
+                    "containerName": "log_router",
+                    "condition": "START"
+                }
+            ],
+            "logConfiguration": {
+                "logDriver": "awsfirelens"
+            },
+            "healthCheck": {
+                "command": [
+                    "CMD-SHELL",
+                    "curl -f http://localhost:8080/health || exit 1"
+                ],
+                "interval": 30,
+                "timeout": 5,
+                "retries": 3,
+                "startPeriod": 60
+            },
+            "systemControls": []
+        },
+        {
+            "name": "log_router",
+            "image": "public.ecr.aws/aws-observability/aws-for-fluent-bit:init-latest",
+            "cpu": 0,
+            "portMappings": [],
+            "essential": true,
+            "environment": [
+                {
+                    "name": "aws_fluent_bit_init_s3_1",
+		    "value": "arn:aws:s3:::ws25-fluent-config-<NUM>/fluent-bit-red.conf"
+                }
+            ],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "user": "0",
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/firelens",
+                    "awslogs-region": "ap-northeast-2",
+                    "awslogs-stream-prefix": "firelens"
+                }
+            },
+            "systemControls": [],
+            "firelensConfiguration": {
+                "type": "fluentbit"
+            }
+        }
+    ],
+    "family": "ws25-ecs-green-taskdef",
+    "taskRoleArn": "arn:aws:iam::<ACCOUNT_ID>:role/ws25-ecs-task-role",
+    "executionRoleArn": "arn:aws:iam::<ACCOUNT_ID>:role/ws25-ecs-task-execution-role",
+    "networkMode": "bridge",
+    "volumes": [],
+    "requiresAttributes": [
+        {
+            "name": "ecs.capability.execution-role-awslogs"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.ecr-auth"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.logging-driver.awsfirelens"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.task-iam-role"
+        },
+        {
+            "name": "ecs.capability.container-health-check"
+        },
+        {
+            "name": "ecs.capability.execution-role-ecr-pull"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+        },
+        {
+            "name": "ecs.capability.firelens.fluentbit"
+        },
+        {
+            "name": "ecs.capability.secrets.asm.environment-variables"
+        },
+        {
+            "name": "ecs.capability.container-ordering"
+        }
+    ],
+    "placementConstraints": [],
+    "requiresCompatibilities": [
+        "EC2"
+    ],
+    "cpu": "1024",
+    "memory": "1024"
+}

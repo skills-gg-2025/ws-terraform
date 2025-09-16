@@ -3,16 +3,19 @@ provider "aws" {
 }
 
 variable "username" {
-  type = string
+  type        = string
+  description = "Database username"
 }
 
 variable "password" {
-  type      = string
-  sensitive = true
+  type        = string
+  sensitive   = true
+  description = "Database password"
 }
 
 variable "number" {
-  type = number
+  type        = number
+  description = "Project number"
 }
 
 data "aws_region" "current" {}

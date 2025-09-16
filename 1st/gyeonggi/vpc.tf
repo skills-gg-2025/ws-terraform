@@ -182,16 +182,10 @@ resource "aws_internet_gateway" "app_igw" {
 # NAT Gateways
 resource "aws_eip" "app_nat_a" {
   domain = "vpc"
-  tags = {
-    Name = "ws25-app-ngw-a-eip"
-  }
 }
 
 resource "aws_eip" "app_nat_c" {
   domain = "vpc"
-  tags = {
-    Name = "ws25-app-ngw-c-eip"
-  }
 }
 
 resource "aws_nat_gateway" "app_nat_a" {

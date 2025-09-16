@@ -509,7 +509,7 @@ resource "aws_ecs_service" "green" {
   availability_zone_rebalancing = "ENABLED"
 
   lifecycle {
-    ignore_changes = [task_definition]
+    ignore_changes = [task_definition, load_balancer]
   }
 
   depends_on = [terraform_data.green_100, aws_autoscaling_group.ecs_asg]
@@ -541,7 +541,7 @@ resource "aws_ecs_service" "red" {
   availability_zone_rebalancing = "ENABLED"
 
   lifecycle {
-    ignore_changes = [task_definition]
+    ignore_changes = [task_definition, load_balancer]
   }
 
   depends_on = [terraform_data.red_100]

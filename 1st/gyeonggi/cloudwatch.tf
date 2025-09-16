@@ -8,7 +8,7 @@ resource "aws_cloudwatch_metric_alarm" "alb_4xx_alarm" {
   period              = "60"
   statistic           = "Sum"
   threshold           = "10"
-  alarm_description   = "This metric monitors ALB 4xx errors"
+  alarm_description   = "ws25-alb-4xx-alarm"
 
   dimensions = {
     LoadBalancer = aws_lb.app_alb.arn_suffix

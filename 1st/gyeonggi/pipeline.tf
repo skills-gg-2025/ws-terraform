@@ -34,6 +34,8 @@ resource "aws_s3_bucket_notification" "red_bucket_notification" {
   eventbridge = true
 }
 
+
+
 # IAM Role for CodePipeline
 resource "aws_iam_role" "codepipeline_role" {
   name = "ws25-codepipeline-role"
@@ -321,8 +323,9 @@ resource "aws_codepipeline" "green_pipeline" {
       output_artifacts = ["source_output"]
 
       configuration = {
-        S3Bucket    = aws_s3_bucket.green_artifacts.bucket
-        S3ObjectKey = "artifact.zip"
+        S3Bucket             = aws_s3_bucket.green_artifacts.bucket
+        S3ObjectKey          = "artifact.zip"
+        PollForSourceChanges = false
       }
     }
   }
@@ -372,8 +375,9 @@ resource "aws_codepipeline" "red_pipeline" {
       output_artifacts = ["source_output"]
 
       configuration = {
-        S3Bucket    = aws_s3_bucket.red_artifacts.bucket
-        S3ObjectKey = "artifact.zip"
+        S3Bucket             = aws_s3_bucket.red_artifacts.bucket
+        S3ObjectKey          = "artifact.zip"
+        PollForSourceChanges = false
       }
     }
   }
@@ -452,3 +456,5 @@ resource "aws_cloudwatch_event_target" "red_pipeline_target" {
   arn       = aws_codepipeline.red_pipeline.arn
   role_arn  = aws_iam_role.cloudwatch_events_role.arn
 }
+
+

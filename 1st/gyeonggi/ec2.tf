@@ -60,9 +60,6 @@ resource "aws_iam_instance_profile" "bastion_profile" {
 # Elastic IP for Bastion
 resource "aws_eip" "bastion_eip" {
   domain = "vpc"
-  tags = {
-    Name = "ws25-bastion-eip"
-  }
 }
 
 # Security Group for Bastion with custom SSH port
@@ -102,13 +99,9 @@ resource "aws_instance" "bastion" {
   user_data = <<-EOF
     #!/bin/bash
     yum update -y
-    yum install -y zip
+    yum install -y zip mariadb105
     sed -i 's/#Port 22/Port 10100/' /etc/ssh/sshd_config
     systemctl restart sshd
-    
-    mkdir -p /home/ec2-user/pipeline/artifact/green
-    mkdir -p /home/ec2-user/pipeline/artifact/red
-    chown -R ec2-user:ec2-user /home/ec2-user/pipeline
   EOF
 
   tags = {
@@ -120,4 +113,69 @@ resource "aws_instance" "bastion" {
 resource "aws_eip_association" "bastion_eip_assoc" {
   instance_id   = aws_instance.bastion.id
   allocation_id = aws_eip.bastion_eip.id
+}
+
+# Copy and configure pipeline folder
+resource "null_resource" "bastion_pipeline_setup" {
+  depends_on = [
+    aws_secretsmanager_secret_version.db_secret_version,
+    aws_eip_association.bastion_eip_assoc
+  ]
+
+  connection {
+    type        = "ssh"
+    user        = "ec2-user"
+    private_key = file("./src/ws25-bastion-key.pem")
+    host        = aws_eip.bastion_eip.public_ip
+    port        = 10100
+  }
+
+  provisioner "file" {
+    source      = "./src/pipeline"
+    destination = "/home/ec2-user/pipeline"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sed -i 's/<ACCOUNT_ID>/${data.aws_caller_identity.current.account_id}/g' /home/ec2-user/pipeline/artifact/green/imageDetail.json",
+      "sed -i 's/<ACCOUNT_ID>/${data.aws_caller_identity.current.account_id}/g' /home/ec2-user/pipeline/artifact/red/imageDetail.json",
+      "sed -i 's|<SECRET_ARN>|${aws_secretsmanager_secret.db_secret.arn}|g' /home/ec2-user/pipeline/artifact/green/taskdef.json",
+      "sed -i 's|<SECRET_ARN>|${aws_secretsmanager_secret.db_secret.arn}|g' /home/ec2-user/pipeline/artifact/red/taskdef.json",
+      "sed -i 's/<ACCOUNT_ID>/${data.aws_caller_identity.current.account_id}/g' /home/ec2-user/pipeline/artifact/green/taskdef.json",
+      "sed -i 's/<ACCOUNT_ID>/${data.aws_caller_identity.current.account_id}/g' /home/ec2-user/pipeline/artifact/red/taskdef.json",
+      "sed -i 's/<NUM>/${var.number}/g' /home/ec2-user/pipeline/green.sh",
+      "sed -i 's/<NUM>/${var.number}/g' /home/ec2-user/pipeline/red.sh",
+      "sed -i 's/ws25-fluent-config-<NUM>/ws25-fluent-config-${var.number}/g' /home/ec2-user/pipeline/artifact/green/taskdef.json",
+      "sed -i 's/ws25-fluent-config-<NUM>/ws25-fluent-config-${var.number}/g' /home/ec2-user/pipeline/artifact/red/taskdef.json",
+      "chmod +x /home/ec2-user/pipeline/green.sh",
+      "chmod +x /home/ec2-user/pipeline/red.sh"
+    ]
+  }
+}
+
+# Remote exec provisioner to setup MySQL and execute SQL
+resource "null_resource" "bastion_mysql_setup" {
+  depends_on = [
+    aws_rds_cluster_instance.aurora_instance_writer,
+    null_resource.bastion_pipeline_setup
+  ]
+
+  connection {
+    type        = "ssh"
+    user        = "ec2-user"
+    private_key = file("./src/ws25-bastion-key.pem")
+    host        = aws_eip.bastion_eip.public_ip
+    port        = 10100
+  }
+
+  provisioner "file" {
+    source      = "./src/day1_table_v1.sql"
+    destination = "/tmp/day1_table_v1.sql"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "mysql -h ${aws_rds_cluster.aurora_cluster.endpoint} -u ${var.username} -P 10101 -p${var.password} day1 < /tmp/day1_table_v1.sql"
+    ]
+  }
 }
