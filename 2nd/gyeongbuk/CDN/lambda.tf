@@ -131,6 +131,12 @@ resource "aws_lambda_function" "invalidation_kr" {
   runtime          = "python3.9"
   timeout          = 60
 
+  environment {
+    variables = {
+      CLOUDFRONT_DISTRIBUTION_ID = aws_cloudfront_distribution.main.id
+    }
+  }
+
   tags = {
     Name = "skills-lambda-function-kr"
   }
@@ -147,7 +153,33 @@ resource "aws_lambda_function" "invalidation_us" {
   runtime          = "python3.9"
   timeout          = 60
 
+  environment {
+    variables = {
+      CLOUDFRONT_DISTRIBUTION_ID = aws_cloudfront_distribution.main.id
+    }
+  }
+
   tags = {
     Name = "skills-lambda-function-us"
   }
+}
+
+# Lambda permission for S3 to invoke KR function
+resource "aws_lambda_permission" "s3_invoke_kr" {
+  provider      = aws.korea
+  statement_id  = "AllowExecutionFromS3Bucket"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.invalidation_kr.function_name
+  principal     = "s3.amazonaws.com"
+  source_arn    = aws_s3_bucket.kr_static.arn
+}
+
+# Lambda permission for S3 to invoke US function
+resource "aws_lambda_permission" "s3_invoke_us" {
+  provider      = aws.us
+  statement_id  = "AllowExecutionFromS3Bucket"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.invalidation_us.function_name
+  principal     = "s3.amazonaws.com"
+  source_arn    = aws_s3_bucket.us_static.arn
 }

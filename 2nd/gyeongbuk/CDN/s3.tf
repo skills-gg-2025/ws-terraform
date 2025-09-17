@@ -174,5 +174,31 @@ resource "aws_s3_bucket_policy" "us_static_policy" {
   policy   = data.aws_iam_policy_document.s3_us_policy.json
 }
 
+# S3 bucket notification for KR
+resource "aws_s3_bucket_notification" "kr_bucket_notification" {
+  provider = aws.korea
+  bucket   = aws_s3_bucket.kr_static.id
+
+  lambda_function {
+    lambda_function_arn = aws_lambda_function.invalidation_kr.arn
+    events              = ["s3:ObjectCreated:*"]
+  }
+
+  depends_on = [aws_lambda_permission.s3_invoke_kr]
+}
+
+# S3 bucket notification for US
+resource "aws_s3_bucket_notification" "us_bucket_notification" {
+  provider = aws.us
+  bucket   = aws_s3_bucket.us_static.id
+
+  lambda_function {
+    lambda_function_arn = aws_lambda_function.invalidation_us.arn
+    events              = ["s3:ObjectCreated:*"]
+  }
+
+  depends_on = [aws_lambda_permission.s3_invoke_us]
+}
+
 # Note: MRAP policy removed due to long creation time in competition environment
 # MRAP will work without explicit policy for this use case
