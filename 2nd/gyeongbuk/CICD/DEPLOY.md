@@ -2,7 +2,7 @@
 ## 1. GitHub Repository 설정
 
 ### Repository 생성
-1. values/dev.values.yaml과 values/prod.values.yaml에서 image.repository와 image.tag 업데이트
+1. values/dev.values.yaml과 values/prod.values.yaml에서 <ACCOUNT_ID> 업데이트
 2. GitHub에서 `day2-product` 이름의 Public Repository 생성
 3. 다음 파일들을 Repository에 업로드:
   - `src/app.py`
@@ -14,14 +14,15 @@
   - `.github/workflows/prod.yml`
 
 ### Branches 생성
-1. `dev` 브랜치 생성 (기본 브랜치)
-2. `prod` 브랜치 생성
+1. dev 브랜치 생성 (기본 브랜치)
+2. prod 브랜치 생성
+3. main 브랜치 생성
 
 ### Secrets 설정
 1. Repository Settings > Secrets and variables > Actions
 2. 다음 Secret 추가:
   - `AWS_ROLE_ARN`: Terraform output에서 나온 github_actions_role_arn 값
-  - `ARGOCD_SERVER`: http://{BASTION_IPv4}:8080
+  - `ARGOCD_SERVER`: {BASTION_IPv4}:8080
   - `ARGOCD_USERNAME`: admin
   - `ARGOCD_PASSWORD`: {PASSWORD}
 
@@ -31,7 +32,7 @@
 
 ### Github Pages
 1. Repository Settings > Pages
-2. Source: `prod` 브랜치, `/ (root)` 선택
+2. Source: `main` 브랜치, `/ (root)` 선택
 3. Save 클릭
 
 ## 2. CLI 환경 설정
@@ -48,7 +49,7 @@ gh auth login
 
 ### 클러스터 연결 확인
 ```bash
-export AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+export AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)  # .bashrc 추가
 kubectl get nodes --context=arn:aws:eks:eu-central-1:$AWS_ACCOUNT_ID:cluster/dev-cluster
 kubectl get nodes --context=arn:aws:eks:eu-central-1:$AWS_ACCOUNT_ID:cluster/prod-cluster
 kubectx arn:aws:eks:eu-central-1:$AWS_ACCOUNT_ID:cluster/dev-cluster
@@ -81,7 +82,7 @@ helm install rollouts argo/argo-rollouts -n argocd --create-namespace
 ```bash
 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.8.2/cert-manager.yaml
 helm repo add actions-runner-controller https://actions-runner-controller.github.io/actions-runner-controller
-helm upgrade --install --namespace actions-runner-system --create-namespace --set=authSecret.create=true --set=authSecret.github_token="REPLACE_YOUR_TOKEN_HERE" --wait actions-runner-controller actions-runner-controller/actions-runner-controller
+helm upgrade --install --namespace actions-runner-system --create-namespace --set=authSecret.create=true --set=authSecret.github_token="<REPLACE_YOUR_TOKEN_HERE>" --wait actions-runner-controller actions-runner-controller/actions-runner-controller
 ```
 
 ### Runner 배포
@@ -140,7 +141,6 @@ helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
 
 ### src/argocd-applications.yaml 파일 수정
 1. `YOUR_USERNAME`을 실제 GitHub 사용자명으로 변경
-2. `PROD_CLUSTER_ENDPOINT`를 실제 Prod 클러스터 엔드포인트로 변경
 
 ### Application 생성
 ```bash

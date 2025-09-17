@@ -25,18 +25,6 @@ jobs:
       id: vars
       run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
-    - name: Install GitHub CLI
-      run: |
-        (type -p wget >/dev/null || (sudo apt update && sudo apt install wget -y)) \
-        && sudo mkdir -p -m 755 /etc/apt/keyrings \
-        && out=$(mktemp) && wget -nv -O$out https://cli.github.com/packages/githubcli-archive-keyring.gpg \
-        && cat $out | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
-        && sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
-        && sudo mkdir -p -m 755 /etc/apt/sources.list.d \
-        && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
-        && sudo apt update \
-        && sudo apt install gh -y
-
     - name: Auto-merge PR
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -64,8 +52,7 @@ jobs:
       run: |
         docker buildx build \
           --platform linux/amd64,linux/arm64 \
-          --cache-from type=registry,ref=$ECR_REGISTRY/$ECR_REPOSITORY:initial \
-          --cache-to type=registry,ref=$ECR_REGISTRY/$ECR_REPOSITORY:cache,mode=max \
+          --cache-from type=registry,ref=$ECR_REGISTRY/$ECR_REPOSITORY:cache \
           --push \
           -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
           .
@@ -75,6 +62,8 @@ jobs:
         IMAGE_TAG: ${{ steps.vars.outputs.sha_short }}
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
       run: |
+        git checkout prod
+        git pull
         sed -i "s|tag:.*|tag: \"$IMAGE_TAG\"|g" values/prod.values.yaml
         sed -i "s|repository:.*|repository: \"$ECR_REGISTRY/product/prod\"|g" values/prod.values.yaml
         git config --local user.email "action@github.com"
@@ -91,12 +80,6 @@ jobs:
         git push origin dev
         git checkout prod
 
-    - name: Install ArgoCD CLI
-      run: |
-        curl -sSL -o argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
-        chmod +x argocd
-        sudo mv argocd /usr/local/bin/
-
     - name: ArgoCD Login
       env:
         ARGOCD_SERVER: ${{ secrets.ARGOCD_SERVER }}
@@ -110,5 +93,4 @@ jobs:
 
     - name: Sync Application
       run: |
-        argocd app sync prod --retry-count 3 --timeout 180
-        argocd app wait prod --timeout 300
+        argocd app sync prod

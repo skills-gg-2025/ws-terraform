@@ -7,10 +7,10 @@ spec:
   replicas: 2
   template:
     spec:
-      repository: YOUR_USERNAME/day2-product
+      repository: <YOUR_USERNAME>/day2-product
       labels:
         - dev
-      image: summerwind/actions-runner:latest
+      image: <ACCOUNT_ID>.dkr.ecr.eu-central-1.amazonaws.com/runner:latest
       resources:
         requests:
           cpu: 100m
@@ -28,10 +28,10 @@ spec:
   replicas: 2
   template:
     spec:
-      repository: YOUR_USERNAME/day2-product
+      repository: <YOUR_USERNAME>/day2-product
       labels:
         - prod
-      image: summerwind/actions-runner:latest
+      image: <ACCOUNT_ID>.dkr.ecr.eu-central-1.amazonaws.com/runner:latest
       resources:
         requests:
           cpu: 100m

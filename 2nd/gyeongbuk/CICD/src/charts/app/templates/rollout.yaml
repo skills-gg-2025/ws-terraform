@@ -23,4 +23,4 @@ spec:
   strategy:
     blueGreen:
       activeService: product
-      autoPromotionEnabled: false
+      autoPromotionEnabled: true

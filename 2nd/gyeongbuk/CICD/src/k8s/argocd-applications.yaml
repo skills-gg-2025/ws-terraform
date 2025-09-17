@@ -6,13 +6,13 @@ metadata:
 spec:
   project: default
   sources:
-    - repoURL: https://YOUR_USERNAME.github.io/day2-product/charts
+    - repoURL: https://<YOUR_USERNAME>.github.io/day2-product/charts
       chart: app
       targetRevision: 0.1.0
       helm:
         valueFiles:
         - $values/values/dev.values.yaml
-    - repoURL: https://github.com/YOUR_USERNAME/day2-product
+    - repoURL: https://github.com/<YOUR_USERNAME>/day2-product
       targetRevision: dev
       ref: values
   destination:
@@ -34,13 +34,13 @@ metadata:
 spec:
   project: default
   sources:
-    - repoURL: https://YOUR_USERNAME.github.io/day2-product/charts
+    - repoURL: https://<YOUR_USERNAME>.github.io/day2-product/charts
       chart: app
       targetRevision: 0.1.0
       helm:
         valueFiles:
         - $values/values/prod.values.yaml
-    - repoURL: https://github.com/YOUR_USERNAME/day2-product
+    - repoURL: https://github.com/<YOUR_USERNAME>/day2-product
       targetRevision: prod
       ref: values
   destination:
