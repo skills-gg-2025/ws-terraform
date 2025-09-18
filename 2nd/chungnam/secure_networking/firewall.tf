@@ -40,8 +40,8 @@ resource "aws_networkfirewall_rule_group" "stateful_dns_block" {
   rule_group {
     rules_source {
       rules_string = <<EOF
-drop udp any any -> 8.8.8.8 53 (msg:"Block external DNS to 8.8.8.8"; sid:1; rev:1;)
-drop tcp any any -> 8.8.8.8 53 (msg:"Block external TCP DNS to 8.8.8.8"; sid:2; rev:1;)
+drop udp any any -> any 53 (msg:"Block external UDP DNS"; sid:1; rev:1;)
+drop tcp any any -> any 53 (msg:"Block external TCP DNS"; sid:2; rev:1;)
 EOF
     }
   }
