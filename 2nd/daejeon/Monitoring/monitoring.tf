@@ -34,7 +34,7 @@ resource "aws_cloudwatch_dashboard" "app_dashboard" {
           metrics = [
             ["AWS/ApplicationELB", "TargetConnectionErrorCount", "LoadBalancer", aws_lb.app_alb.arn_suffix]
           ]
-          period = 60
+          period = 300
           stat   = "Sum"
           region = "ap-southeast-1"
           title  = "wsi-fail"
@@ -85,7 +85,7 @@ resource "aws_cloudwatch_dashboard" "app_dashboard" {
           region  = "ap-southeast-1"
           title   = "wsi-p90-p96-p99"
           view    = "timeSeries"
-          stacked = true
+          stacked = false
         }
       }
     ]

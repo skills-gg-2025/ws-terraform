@@ -1,0 +1,1107 @@
+[0m[1mdata.aws_caller_identity.current: Reading...[0m[0m
+[0m[1maws_eip.nat_eip_c: Refreshing state... [id=eipalloc-026e46cb8d2abb969][0m
+[0m[1maws_ecs_cluster.app_cluster: Refreshing state... [id=arn:aws:ecs:ap-southeast-1:122610509788:cluster/wsi-app-cluster][0m
+[0m[1maws_cloudwatch_log_group.app_logs: Refreshing state... [id=/ecs/wsi-app-logs][0m
+[0m[1maws_eip.nat_eip_a: Refreshing state... [id=eipalloc-0e1d69fcc0c1b85e8][0m
+[0m[1mdata.aws_region.current: Reading...[0m[0m
+[0m[1maws_ecr_repository.app_repo: Refreshing state... [id=wsi-app-repo][0m
+[0m[1maws_vpc.wsi_vpc: Refreshing state... [id=vpc-07310854bdd7b2a92][0m
+[0m[1mdata.aws_region.current: Read complete after 0s [id=ap-southeast-1][0m
+[0m[1maws_iam_role.ecs_task_execution_role: Refreshing state... [id=wsi-ecs-task-execution-role][0m
+[0m[1mdata.aws_caller_identity.current: Read complete after 0s [id=122610509788][0m
+[0m[1maws_cloudwatch_query_definition.app_query: Refreshing state... [id=f07890a3-2d28-4ce5-812d-8c6e1b6ce69e][0m
+[0m[1mterraform_data.app: Refreshing state... [id=9623a5fe-c437-486b-c6f9-736d5cb99509][0m
+[0m[1maws_iam_role_policy_attachment.ecs_task_execution_role_policy: Refreshing state... [id=wsi-ecs-task-execution-role/arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy][0m
+[0m[1maws_ecs_task_definition.app_task: Refreshing state... [id=wsi-app-fargate-task][0m
+[0m[1maws_subnet.wsi_pub_sn_c: Refreshing state... [id=subnet-08ca480013eaead21][0m
+[0m[1maws_subnet.wsi_pub_sn_a: Refreshing state... [id=subnet-0925ccfcc7daef4b2][0m
+[0m[1maws_subnet.wsi_priv_sn_c: Refreshing state... [id=subnet-042eb4b4e0d6758d5][0m
+[0m[1maws_internet_gateway.wsi_igw: Refreshing state... [id=igw-0f817f2d5649a3ae8][0m
+[0m[1maws_subnet.wsi_priv_sn_a: Refreshing state... [id=subnet-027cf2edb735d2f8e][0m
+[0m[1maws_security_group.alb_sg: Refreshing state... [id=sg-090bac64e3bfb5c52][0m
+[0m[1maws_lb_target_group.app_tg: Refreshing state... [id=arn:aws:elasticloadbalancing:ap-southeast-1:122610509788:targetgroup/wsi-app-tg/dc2b48bef8eace8a][0m
+[0m[1maws_nat_gateway.wsi_nat_gw_a: Refreshing state... [id=nat-0aa78cb239171b9ea][0m
+[0m[1maws_nat_gateway.wsi_nat_gw_c: Refreshing state... [id=nat-0b05f797cde059e4e][0m
+[0m[1maws_route_table.wsi_pub_rt: Refreshing state... [id=rtb-09254958d233189f2][0m
+[0m[1maws_security_group.ecs_tasks_sg: Refreshing state... [id=sg-08ada4092e5f948ca][0m
+[0m[1maws_lb.app_alb: Refreshing state... [id=arn:aws:elasticloadbalancing:ap-southeast-1:122610509788:loadbalancer/app/wsi-app-alb/8c64a6bfb5899ca2][0m
+[0m[1maws_route_table.wsi_priv_rt_a: Refreshing state... [id=rtb-08ba62a5ef3bf3549][0m
+[0m[1maws_route_table.wsi_priv_rt_c: Refreshing state... [id=rtb-07a9fad6e3c7b1dca][0m
+[0m[1maws_route_table_association.pub_a_association: Refreshing state... [id=rtbassoc-04824740672567c8d][0m
+[0m[1maws_route_table_association.pub_c_association: Refreshing state... [id=rtbassoc-0ed47b19cf57cfbae][0m
+[0m[1maws_route_table_association.priv_a_association: Refreshing state... [id=rtbassoc-0e6dfd4faf979b4c9][0m
+[0m[1maws_route_table_association.priv_c_association: Refreshing state... [id=rtbassoc-02221af1158e17728][0m
+[0m[1maws_cloudwatch_dashboard.app_dashboard: Refreshing state... [id=wsi-dashboard][0m
+[0m[1maws_lb_listener.app_listener: Refreshing state... [id=arn:aws:elasticloadbalancing:ap-southeast-1:122610509788:listener/app/wsi-app-alb/8c64a6bfb5899ca2/d9d1f2c886b4f7bf][0m
+[0m[1maws_ecs_service.app_service: Refreshing state... [id=arn:aws:ecs:ap-southeast-1:122610509788:service/wsi-app-cluster/wsi-app-service][0m
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  [31m-[0m destroy[0m
+
+Terraform will perform the following actions:
+
+[1m  # aws_cloudwatch_dashboard.app_dashboard[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_cloudwatch_dashboard" "app_dashboard" {
+      [31m-[0m[0m dashboard_arn  = "arn:aws:cloudwatch::122610509788:dashboard/wsi-dashboard" [90m-> null[0m[0m
+      [31m-[0m[0m dashboard_body = jsonencode(
+            {
+              [31m-[0m[0m widgets = [
+                  [31m-[0m[0m {
+                      [31m-[0m[0m height     = 6
+                      [31m-[0m[0m properties = {
+                          [31m-[0m[0m metrics = [
+                              [31m-[0m[0m [
+                                  [31m-[0m[0m "AWS/ApplicationELB",
+                                  [31m-[0m[0m "RequestCount",
+                                  [31m-[0m[0m "LoadBalancer",
+                                  [31m-[0m[0m "app/wsi-app-alb/8c64a6bfb5899ca2",
+                                ],
+                            ]
+                          [31m-[0m[0m period  = 60
+                          [31m-[0m[0m region  = "ap-southeast-1"
+                          [31m-[0m[0m stacked = true
+                          [31m-[0m[0m stat    = "Sum"
+                          [31m-[0m[0m title   = "wsi-success"
+                          [31m-[0m[0m view    = "timeSeries"
+                        }
+                      [31m-[0m[0m type       = "metric"
+                      [31m-[0m[0m width      = 12
+                      [31m-[0m[0m x          = 0
+                      [31m-[0m[0m y          = 0
+                    },
+                  [31m-[0m[0m {
+                      [31m-[0m[0m height     = 6
+                      [31m-[0m[0m properties = {
+                          [31m-[0m[0m metrics = [
+                              [31m-[0m[0m [
+                                  [31m-[0m[0m "AWS/ApplicationELB",
+                                  [31m-[0m[0m "TargetConnectionErrorCount",
+                                  [31m-[0m[0m "LoadBalancer",
+                                  [31m-[0m[0m "app/wsi-app-alb/8c64a6bfb5899ca2",
+                                ],
+                            ]
+                          [31m-[0m[0m period  = 300
+                          [31m-[0m[0m region  = "ap-southeast-1"
+                          [31m-[0m[0m stacked = true
+                          [31m-[0m[0m stat    = "Sum"
+                          [31m-[0m[0m title   = "wsi-fail"
+                          [31m-[0m[0m view    = "timeSeries"
+                        }
+                      [31m-[0m[0m type       = "metric"
+                      [31m-[0m[0m width      = 12
+                      [31m-[0m[0m x          = 12
+                      [31m-[0m[0m y          = 0
+                    },
+                  [31m-[0m[0m {
+                      [31m-[0m[0m height     = 6
+                      [31m-[0m[0m properties = {
+                          [31m-[0m[0m metrics = [
+                              [31m-[0m[0m [
+                                  [31m-[0m[0m {
+                                      [31m-[0m[0m expression = "m1/(m1+m2)*100"
+                                      [31m-[0m[0m id         = "e1"
+                                      [31m-[0m[0m label      = "Success Rate (%)"
+                                    },
+                                ],
+                              [31m-[0m[0m [
+                                  [31m-[0m[0m "AWS/ApplicationELB",
+                                  [31m-[0m[0m "RequestCount",
+                                  [31m-[0m[0m "LoadBalancer",
+                                  [31m-[0m[0m "app/wsi-app-alb/8c64a6bfb5899ca2",
+                                  [31m-[0m[0m {
+                                      [31m-[0m[0m id      = "m1"
+                                      [31m-[0m[0m visible = false
+                                    },
+                                ],
+                              [31m-[0m[0m [
+                                  [31m-[0m[0m "AWS/ApplicationELB",
+                                  [31m-[0m[0m "TargetConnectionErrorCount",
+                                  [31m-[0m[0m "LoadBalancer",
+                                  [31m-[0m[0m "app/wsi-app-alb/8c64a6bfb5899ca2",
+                                  [31m-[0m[0m {
+                                      [31m-[0m[0m id      = "m2"
+                                      [31m-[0m[0m visible = false
+                                    },
+                                ],
+                            ]
+                          [31m-[0m[0m period  = 300
+                          [31m-[0m[0m region  = "ap-southeast-1"
+                          [31m-[0m[0m stat    = "Sum"
+                          [31m-[0m[0m title   = "wsi-sli"
+                          [31m-[0m[0m view    = "gauge"
+                          [31m-[0m[0m yAxis   = {
+                              [31m-[0m[0m left = {
+                                  [31m-[0m[0m max = 100
+                                  [31m-[0m[0m min = 0
+                                }
+                            }
+                        }
+                      [31m-[0m[0m type       = "metric"
+                      [31m-[0m[0m width      = 12
+                      [31m-[0m[0m x          = 0
+                      [31m-[0m[0m y          = 6
+                    },
+                  [31m-[0m[0m {
+                      [31m-[0m[0m height     = 6
+                      [31m-[0m[0m properties = {
+                          [31m-[0m[0m metrics = [
+                              [31m-[0m[0m [
+                                  [31m-[0m[0m "AWS/ApplicationELB",
+                                  [31m-[0m[0m "TargetResponseTime",
+                                  [31m-[0m[0m "LoadBalancer",
+                                  [31m-[0m[0m "app/wsi-app-alb/8c64a6bfb5899ca2",
+                                  [31m-[0m[0m {
+                                      [31m-[0m[0m stat = "p90"
+                                    },
+                                ],
+                              [31m-[0m[0m [
+                                  [31m-[0m[0m "AWS/ApplicationELB",
+                                  [31m-[0m[0m "TargetResponseTime",
+                                  [31m-[0m[0m "LoadBalancer",
+                                  [31m-[0m[0m "app/wsi-app-alb/8c64a6bfb5899ca2",
+                                  [31m-[0m[0m {
+                                      [31m-[0m[0m stat = "p95"
+                                    },
+                                ],
+                              [31m-[0m[0m [
+                                  [31m-[0m[0m "AWS/ApplicationELB",
+                                  [31m-[0m[0m "TargetResponseTime",
+                                  [31m-[0m[0m "LoadBalancer",
+                                  [31m-[0m[0m "app/wsi-app-alb/8c64a6bfb5899ca2",
+                                  [31m-[0m[0m {
+                                      [31m-[0m[0m stat = "p99"
+                                    },
+                                ],
+                            ]
+                          [31m-[0m[0m period  = 60
+                          [31m-[0m[0m region  = "ap-southeast-1"
+                          [31m-[0m[0m stacked = false
+                          [31m-[0m[0m title   = "wsi-p90-p96-p99"
+                          [31m-[0m[0m view    = "timeSeries"
+                        }
+                      [31m-[0m[0m type       = "metric"
+                      [31m-[0m[0m width      = 12
+                      [31m-[0m[0m x          = 12
+                      [31m-[0m[0m y          = 6
+                    },
+                ]
+            }
+        ) [90m-> null[0m[0m
+      [31m-[0m[0m dashboard_name = "wsi-dashboard" [90m-> null[0m[0m
+      [31m-[0m[0m id             = "wsi-dashboard" [90m-> null[0m[0m
+      [31m-[0m[0m region         = "ap-southeast-1" [90m-> null[0m[0m
+    }
+
+[1m  # aws_cloudwatch_log_group.app_logs[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_cloudwatch_log_group" "app_logs" {
+      [31m-[0m[0m arn               = "arn:aws:logs:ap-southeast-1:122610509788:log-group:/ecs/wsi-app-logs" [90m-> null[0m[0m
+      [31m-[0m[0m id                = "/ecs/wsi-app-logs" [90m-> null[0m[0m
+      [31m-[0m[0m log_group_class   = "STANDARD" [90m-> null[0m[0m
+      [31m-[0m[0m name              = "/ecs/wsi-app-logs" [90m-> null[0m[0m
+      [31m-[0m[0m region            = "ap-southeast-1" [90m-> null[0m[0m
+      [31m-[0m[0m retention_in_days = 30 [90m-> null[0m[0m
+      [31m-[0m[0m skip_destroy      = false [90m-> null[0m[0m
+      [31m-[0m[0m tags              = {} [90m-> null[0m[0m
+      [31m-[0m[0m tags_all          = {} [90m-> null[0m[0m
+        [90m# (2 unchanged attributes hidden)[0m[0m
+    }
+
+[1m  # aws_cloudwatch_query_definition.app_query[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_cloudwatch_query_definition" "app_query" {
+      [31m-[0m[0m id                  = "f07890a3-2d28-4ce5-812d-8c6e1b6ce69e" [90m-> null[0m[0m
+      [31m-[0m[0m log_group_names     = [
+          [31m-[0m[0m "/ecs/wsi-app-logs",
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m name                = "wsi-query" [90m-> null[0m[0m
+      [31m-[0m[0m query_definition_id = "f07890a3-2d28-4ce5-812d-8c6e1b6ce69e" [90m-> null[0m[0m
+      [31m-[0m[0m query_string        = <<-EOT
+            parse @message /(?<log_date>\d{4}\/\d{2}\/\d{2}) (?<log_time>\d{2}:\d{2}:\d{2}) (?<local_ip>\S+) (?<remote_ip>\S+) (?<method>\S+) (?<path>\S+) (?<status>\d+) (?<size>\d+) (?<referer>\d+) (?<response_time>\S+)/
+            | filter path = "/healthcheck"
+            | sort @timestamp desc
+            | limit 1
+            | stats latest(@timestamp) as current_time, latest(log_date) as latest_log_date, latest(log_time) as latest_log_time, latest(local_ip) as latest_local_ip, latest(remote_ip) as latest_remote_ip, latest(method) as latest_method, latest(path) as latest_path, latest(status) as latest_status, latest(response_time) as latest_response_time
+        EOT [90m-> null[0m[0m
+      [31m-[0m[0m region              = "ap-southeast-1" [90m-> null[0m[0m
+    }
+
+[1m  # aws_ecr_repository.app_repo[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_ecr_repository" "app_repo" {
+      [31m-[0m[0m arn                  = "arn:aws:ecr:ap-southeast-1:122610509788:repository/wsi-app-repo" [90m-> null[0m[0m
+      [31m-[0m[0m force_delete         = true [90m-> null[0m[0m
+      [31m-[0m[0m id                   = "wsi-app-repo" [90m-> null[0m[0m
+      [31m-[0m[0m image_tag_mutability = "MUTABLE" [90m-> null[0m[0m
+      [31m-[0m[0m name                 = "wsi-app-repo" [90m-> null[0m[0m
+      [31m-[0m[0m region               = "ap-southeast-1" [90m-> null[0m[0m
+      [31m-[0m[0m registry_id          = "122610509788" [90m-> null[0m[0m
+      [31m-[0m[0m repository_url       = "122610509788.dkr.ecr.ap-southeast-1.amazonaws.com/wsi-app-repo" [90m-> null[0m[0m
+      [31m-[0m[0m tags                 = {} [90m-> null[0m[0m
+      [31m-[0m[0m tags_all             = {} [90m-> null[0m[0m
+
+      [31m-[0m[0m encryption_configuration {
+          [31m-[0m[0m encryption_type = "AES256" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+
+      [31m-[0m[0m image_scanning_configuration {
+          [31m-[0m[0m scan_on_push = true [90m-> null[0m[0m
+        }
+    }
+
+[1m  # aws_ecs_cluster.app_cluster[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_ecs_cluster" "app_cluster" {
+      [31m-[0m[0m arn      = "arn:aws:ecs:ap-southeast-1:122610509788:cluster/wsi-app-cluster" [90m-> null[0m[0m
+      [31m-[0m[0m id       = "arn:aws:ecs:ap-southeast-1:122610509788:cluster/wsi-app-cluster" [90m-> null[0m[0m
+      [31m-[0m[0m name     = "wsi-app-cluster" [90m-> null[0m[0m
+      [31m-[0m[0m region   = "ap-southeast-1" [90m-> null[0m[0m
+      [31m-[0m[0m tags     = {} [90m-> null[0m[0m
+      [31m-[0m[0m tags_all = {} [90m-> null[0m[0m
+
+      [31m-[0m[0m setting {
+          [31m-[0m[0m name  = "containerInsights" [90m-> null[0m[0m
+          [31m-[0m[0m value = "enabled" [90m-> null[0m[0m
+        }
+    }
+
+[1m  # aws_ecs_service.app_service[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_ecs_service" "app_service" {
+      [31m-[0m[0m arn                                = "arn:aws:ecs:ap-southeast-1:122610509788:service/wsi-app-cluster/wsi-app-service" [90m-> null[0m[0m
+      [31m-[0m[0m availability_zone_rebalancing      = "DISABLED" [90m-> null[0m[0m
+      [31m-[0m[0m cluster                            = "arn:aws:ecs:ap-southeast-1:122610509788:cluster/wsi-app-cluster" [90m-> null[0m[0m
+      [31m-[0m[0m deployment_maximum_percent         = 200 [90m-> null[0m[0m
+      [31m-[0m[0m deployment_minimum_healthy_percent = 100 [90m-> null[0m[0m
+      [31m-[0m[0m desired_count                      = 2 [90m-> null[0m[0m
+      [31m-[0m[0m enable_ecs_managed_tags            = false [90m-> null[0m[0m
+      [31m-[0m[0m enable_execute_command             = false [90m-> null[0m[0m
+      [31m-[0m[0m health_check_grace_period_seconds  = 0 [90m-> null[0m[0m
+      [31m-[0m[0m iam_role                           = "/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS" [90m-> null[0m[0m
+      [31m-[0m[0m id                                 = "arn:aws:ecs:ap-southeast-1:122610509788:service/wsi-app-cluster/wsi-app-service" [90m-> null[0m[0m
+      [31m-[0m[0m launch_type                        = "FARGATE" [90m-> null[0m[0m
+      [31m-[0m[0m name                               = "wsi-app-service" [90m-> null[0m[0m
+      [31m-[0m[0m platform_version                   = "LATEST" [90m-> null[0m[0m
+      [31m-[0m[0m propagate_tags                     = "NONE" [90m-> null[0m[0m
+      [31m-[0m[0m region                             = "ap-southeast-1" [90m-> null[0m[0m
+      [31m-[0m[0m scheduling_strategy                = "REPLICA" [90m-> null[0m[0m
+      [31m-[0m[0m tags                               = {} [90m-> null[0m[0m
+      [31m-[0m[0m tags_all                           = {} [90m-> null[0m[0m
+      [31m-[0m[0m task_definition                    = "arn:aws:ecs:ap-southeast-1:122610509788:task-definition/wsi-app-fargate-task:8" [90m-> null[0m[0m
+      [31m-[0m[0m triggers                           = {} [90m-> null[0m[0m
+      [31m-[0m[0m wait_for_steady_state              = false [90m-> null[0m[0m
+
+      [31m-[0m[0m deployment_circuit_breaker {
+          [31m-[0m[0m enable   = false [90m-> null[0m[0m
+          [31m-[0m[0m rollback = false [90m-> null[0m[0m
+        }
+
+      [31m-[0m[0m deployment_controller {
+          [31m-[0m[0m type = "ECS" [90m-> null[0m[0m
+        }
+
+      [31m-[0m[0m load_balancer {
+          [31m-[0m[0m container_name   = "wsi-app-cnt" [90m-> null[0m[0m
+          [31m-[0m[0m container_port   = 5000 [90m-> null[0m[0m
+          [31m-[0m[0m target_group_arn = "arn:aws:elasticloadbalancing:ap-southeast-1:122610509788:targetgroup/wsi-app-tg/dc2b48bef8eace8a" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+
+      [31m-[0m[0m network_configuration {
+          [31m-[0m[0m assign_public_ip = false [90m-> null[0m[0m
+          [31m-[0m[0m security_groups  = [
+              [31m-[0m[0m "sg-08ada4092e5f948ca",
+            ] [90m-> null[0m[0m
+          [31m-[0m[0m subnets          = [
+              [31m-[0m[0m "subnet-027cf2edb735d2f8e",
+              [31m-[0m[0m "subnet-042eb4b4e0d6758d5",
+            ] [90m-> null[0m[0m
+        }
+    }
+
+[1m  # aws_ecs_task_definition.app_task[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_ecs_task_definition" "app_task" {
+      [31m-[0m[0m arn                      = "arn:aws:ecs:ap-southeast-1:122610509788:task-definition/wsi-app-fargate-task:8" [90m-> null[0m[0m
+      [31m-[0m[0m arn_without_revision     = "arn:aws:ecs:ap-southeast-1:122610509788:task-definition/wsi-app-fargate-task" [90m-> null[0m[0m
+      [31m-[0m[0m container_definitions    = jsonencode(
+            [
+              [31m-[0m[0m {
+                  [31m-[0m[0m environment      = []
+                  [31m-[0m[0m essential        = true
+                  [31m-[0m[0m image            = "122610509788.dkr.ecr.ap-southeast-1.amazonaws.com/wsi-app-repo"
+                  [31m-[0m[0m logConfiguration = {
+                      [31m-[0m[0m logDriver = "awslogs"
+                      [31m-[0m[0m options   = {
+                          [31m-[0m[0m awslogs-group         = "/ecs/wsi-app-logs"
+                          [31m-[0m[0m awslogs-region        = "ap-southeast-1"
+                          [31m-[0m[0m awslogs-stream-prefix = "ecs"
+                        }
+                    }
+                  [31m-[0m[0m mountPoints      = []
+                  [31m-[0m[0m name             = "wsi-app-cnt"
+                  [31m-[0m[0m portMappings     = [
+                      [31m-[0m[0m {
+                          [31m-[0m[0m containerPort = 5000
+                          [31m-[0m[0m hostPort      = 5000
+                          [31m-[0m[0m protocol      = "tcp"
+                        },
+                    ]
+                  [31m-[0m[0m systemControls   = []
+                  [31m-[0m[0m volumesFrom      = []
+                },
+            ]
+        ) [90m-> null[0m[0m
+      [31m-[0m[0m cpu                      = "256" [90m-> null[0m[0m
+      [31m-[0m[0m enable_fault_injection   = false [90m-> null[0m[0m
+      [31m-[0m[0m execution_role_arn       = "arn:aws:iam::122610509788:role/wsi-ecs-task-execution-role" [90m-> null[0m[0m
+      [31m-[0m[0m family                   = "wsi-app-fargate-task" [90m-> null[0m[0m
+      [31m-[0m[0m id                       = "wsi-app-fargate-task" [90m-> null[0m[0m
+      [31m-[0m[0m memory                   = "512" [90m-> null[0m[0m
+      [31m-[0m[0m network_mode             = "awsvpc" [90m-> null[0m[0m
+      [31m-[0m[0m region                   = "ap-southeast-1" [90m-> null[0m[0m
+      [31m-[0m[0m requires_compatibilities = [
+          [31m-[0m[0m "FARGATE",
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m revision                 = 8 [90m-> null[0m[0m
+      [31m-[0m[0m skip_destroy             = false [90m-> null[0m[0m
+      [31m-[0m[0m tags                     = {} [90m-> null[0m[0m
+      [31m-[0m[0m tags_all                 = {} [90m-> null[0m[0m
+      [31m-[0m[0m track_latest             = false [90m-> null[0m[0m
+        [90m# (3 unchanged attributes hidden)[0m[0m
+    }
+
+[1m  # aws_eip.nat_eip_a[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_eip" "nat_eip_a" {
+      [31m-[0m[0m allocation_id            = "eipalloc-0e1d69fcc0c1b85e8" [90m-> null[0m[0m
+      [31m-[0m[0m arn                      = "arn:aws:ec2:ap-southeast-1:122610509788:elastic-ip/eipalloc-0e1d69fcc0c1b85e8" [90m-> null[0m[0m
+      [31m-[0m[0m association_id           = "eipassoc-05ab9a570ddb29364" [90m-> null[0m[0m
+      [31m-[0m[0m domain                   = "vpc" [90m-> null[0m[0m
+      [31m-[0m[0m id                       = "eipalloc-0e1d69fcc0c1b85e8" [90m-> null[0m[0m
+      [31m-[0m[0m network_border_group     = "ap-southeast-1" [90m-> null[0m[0m
+      [31m-[0m[0m network_interface        = "eni-0164e756dfc8221f0" [90m-> null[0m[0m
+      [31m-[0m[0m private_dns              = "ip-10-0-10-201.ap-southeast-1.compute.internal" [90m-> null[0m[0m
+      [31m-[0m[0m private_ip               = "10.0.10.201" [90m-> null[0m[0m
+      [31m-[0m[0m public_dns               = "ec2-18-143-72-197.ap-southeast-1.compute.amazonaws.com" [90m-> null[0m[0m
+      [31m-[0m[0m public_ip                = "18.143.72.197" [90m-> null[0m[0m
+      [31m-[0m[0m public_ipv4_pool         = "amazon" [90m-> null[0m[0m
+      [31m-[0m[0m region                   = "ap-southeast-1" [90m-> null[0m[0m
+      [31m-[0m[0m tags                     = {} [90m-> null[0m[0m
+      [31m-[0m[0m tags_all                 = {} [90m-> null[0m[0m
+        [90m# (5 unchanged attributes hidden)[0m[0m
+    }
+
+[1m  # aws_eip.nat_eip_c[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_eip" "nat_eip_c" {
+      [31m-[0m[0m allocation_id            = "eipalloc-026e46cb8d2abb969" [90m-> null[0m[0m
+      [31m-[0m[0m arn                      = "arn:aws:ec2:ap-southeast-1:122610509788:elastic-ip/eipalloc-026e46cb8d2abb969" [90m-> null[0m[0m
+      [31m-[0m[0m association_id           = "eipassoc-0af14dcba05734b43" [90m-> null[0m[0m
+      [31m-[0m[0m domain                   = "vpc" [90m-> null[0m[0m
+      [31m-[0m[0m id                       = "eipalloc-026e46cb8d2abb969" [90m-> null[0m[0m
+      [31m-[0m[0m network_border_group     = "ap-southeast-1" [90m-> null[0m[0m
+      [31m-[0m[0m network_interface        = "eni-004ab092e67ff0c2f" [90m-> null[0m[0m
+      [31m-[0m[0m private_dns              = "ip-10-0-11-159.ap-southeast-1.compute.internal" [90m-> null[0m[0m
+      [31m-[0m[0m private_ip               = "10.0.11.159" [90m-> null[0m[0m
+      [31m-[0m[0m public_dns               = "ec2-47-129-15-3.ap-southeast-1.compute.amazonaws.com" [90m-> null[0m[0m
+      [31m-[0m[0m public_ip                = "47.129.15.3" [90m-> null[0m[0m
+      [31m-[0m[0m public_ipv4_pool         = "amazon" [90m-> null[0m[0m
+      [31m-[0m[0m region                   = "ap-southeast-1" [90m-> null[0m[0m
+      [31m-[0m[0m tags                     = {} [90m-> null[0m[0m
+      [31m-[0m[0m tags_all                 = {} [90m-> null[0m[0m
+        [90m# (5 unchanged attributes hidden)[0m[0m
+    }
+
+[1m  # aws_iam_role.ecs_task_execution_role[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_iam_role" "ecs_task_execution_role" {
+      [31m-[0m[0m arn                   = "arn:aws:iam::122610509788:role/wsi-ecs-task-execution-role" [90m-> null[0m[0m
+      [31m-[0m[0m assume_role_policy    = jsonencode(
+            {
+              [31m-[0m[0m Statement = [
+                  [31m-[0m[0m {
+                      [31m-[0m[0m Action    = "sts:AssumeRole"
+                      [31m-[0m[0m Effect    = "Allow"
+                      [31m-[0m[0m Principal = {
+                          [31m-[0m[0m Service = "ecs-tasks.amazonaws.com"
+                        }
+                    },
+                ]
+              [31m-[0m[0m Version   = "2012-10-17"
+            }
+        ) [90m-> null[0m[0m
+      [31m-[0m[0m create_date           = "2025-09-18T05:43:03Z" [90m-> null[0m[0m
+      [31m-[0m[0m force_detach_policies = false [90m-> null[0m[0m
+      [31m-[0m[0m id                    = "wsi-ecs-task-execution-role" [90m-> null[0m[0m
+      [31m-[0m[0m managed_policy_arns   = [
+          [31m-[0m[0m "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy",
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m max_session_duration  = 3600 [90m-> null[0m[0m
+      [31m-[0m[0m name                  = "wsi-ecs-task-execution-role" [90m-> null[0m[0m
+      [31m-[0m[0m path                  = "/" [90m-> null[0m[0m
+      [31m-[0m[0m tags                  = {} [90m-> null[0m[0m
+      [31m-[0m[0m tags_all              = {} [90m-> null[0m[0m
+      [31m-[0m[0m unique_id             = "AROARZDBH47OBHRXCNB74" [90m-> null[0m[0m
+        [90m# (3 unchanged attributes hidden)[0m[0m
+    }
+
+[1m  # aws_iam_role_policy_attachment.ecs_task_execution_role_policy[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy" {
+      [31m-[0m[0m id         = "wsi-ecs-task-execution-role/arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy" [90m-> null[0m[0m
+      [31m-[0m[0m policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy" [90m-> null[0m[0m
+      [31m-[0m[0m role       = "wsi-ecs-task-execution-role" [90m-> null[0m[0m
+    }
+
+[1m  # aws_internet_gateway.wsi_igw[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_internet_gateway" "wsi_igw" {
+      [31m-[0m[0m arn      = "arn:aws:ec2:ap-southeast-1:122610509788:internet-gateway/igw-0f817f2d5649a3ae8" [90m-> null[0m[0m
+      [31m-[0m[0m id       = "igw-0f817f2d5649a3ae8" [90m-> null[0m[0m
+      [31m-[0m[0m owner_id = "122610509788" [90m-> null[0m[0m
+      [31m-[0m[0m region   = "ap-southeast-1" [90m-> null[0m[0m
+      [31m-[0m[0m tags     = {
+          [31m-[0m[0m "Name" = "wsi-igw"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m tags_all = {
+          [31m-[0m[0m "Name" = "wsi-igw"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m vpc_id   = "vpc-07310854bdd7b2a92" [90m-> null[0m[0m
+    }
+
+[1m  # aws_lb.app_alb[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_lb" "app_alb" {
+      [31m-[0m[0m arn                                                          = "arn:aws:elasticloadbalancing:ap-southeast-1:122610509788:loadbalancer/app/wsi-app-alb/8c64a6bfb5899ca2" [90m-> null[0m[0m
+      [31m-[0m[0m arn_suffix                                                   = "app/wsi-app-alb/8c64a6bfb5899ca2" [90m-> null[0m[0m
+      [31m-[0m[0m client_keep_alive                                            = 3600 [90m-> null[0m[0m
+      [31m-[0m[0m desync_mitigation_mode                                       = "defensive" [90m-> null[0m[0m
+      [31m-[0m[0m dns_name                                                     = "wsi-app-alb-1396948629.ap-southeast-1.elb.amazonaws.com" [90m-> null[0m[0m
+      [31m-[0m[0m drop_invalid_header_fields                                   = false [90m-> null[0m[0m
+      [31m-[0m[0m enable_cross_zone_load_balancing                             = true [90m-> null[0m[0m
+      [31m-[0m[0m enable_deletion_protection                                   = false [90m-> null[0m[0m
+      [31m-[0m[0m enable_http2                                                 = true [90m-> null[0m[0m
+      [31m-[0m[0m enable_tls_version_and_cipher_suite_headers                  = false [90m-> null[0m[0m
+      [31m-[0m[0m enable_waf_fail_open                                         = false [90m-> null[0m[0m
+      [31m-[0m[0m enable_xff_client_port                                       = false [90m-> null[0m[0m
+      [31m-[0m[0m enable_zonal_shift                                           = false [90m-> null[0m[0m
+      [31m-[0m[0m id                                                           = "arn:aws:elasticloadbalancing:ap-southeast-1:122610509788:loadbalancer/app/wsi-app-alb/8c64a6bfb5899ca2" [90m-> null[0m[0m
+      [31m-[0m[0m idle_timeout                                                 = 60 [90m-> null[0m[0m
+      [31m-[0m[0m internal                                                     = false [90m-> null[0m[0m
+      [31m-[0m[0m ip_address_type                                              = "ipv4" [90m-> null[0m[0m
+      [31m-[0m[0m load_balancer_type                                           = "application" [90m-> null[0m[0m
+      [31m-[0m[0m name                                                         = "wsi-app-alb" [90m-> null[0m[0m
+      [31m-[0m[0m preserve_host_header                                         = false [90m-> null[0m[0m
+      [31m-[0m[0m region                                                       = "ap-southeast-1" [90m-> null[0m[0m
+      [31m-[0m[0m security_groups                                              = [
+          [31m-[0m[0m "sg-090bac64e3bfb5c52",
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m subnets                                                      = [
+          [31m-[0m[0m "subnet-08ca480013eaead21",
+          [31m-[0m[0m "subnet-0925ccfcc7daef4b2",
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m tags                                                         = {
+          [31m-[0m[0m "Name" = "wsi-app-alb"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m tags_all                                                     = {
+          [31m-[0m[0m "Name" = "wsi-app-alb"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m vpc_id                                                       = "vpc-07310854bdd7b2a92" [90m-> null[0m[0m
+      [31m-[0m[0m xff_header_processing_mode                                   = "append" [90m-> null[0m[0m
+      [31m-[0m[0m zone_id                                                      = "Z1LMS91P8CMLE5" [90m-> null[0m[0m
+        [90m# (3 unchanged attributes hidden)[0m[0m
+
+      [31m-[0m[0m access_logs {
+          [31m-[0m[0m enabled = false [90m-> null[0m[0m
+            [90m# (2 unchanged attributes hidden)[0m[0m
+        }
+
+      [31m-[0m[0m connection_logs {
+          [31m-[0m[0m enabled = false [90m-> null[0m[0m
+            [90m# (2 unchanged attributes hidden)[0m[0m
+        }
+
+      [31m-[0m[0m subnet_mapping {
+          [31m-[0m[0m subnet_id            = "subnet-08ca480013eaead21" [90m-> null[0m[0m
+            [90m# (4 unchanged attributes hidden)[0m[0m
+        }
+      [31m-[0m[0m subnet_mapping {
+          [31m-[0m[0m subnet_id            = "subnet-0925ccfcc7daef4b2" [90m-> null[0m[0m
+            [90m# (4 unchanged attributes hidden)[0m[0m
+        }
+    }
+
+[1m  # aws_lb_listener.app_listener[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_lb_listener" "app_listener" {
+      [31m-[0m[0m arn                                                                 = "arn:aws:elasticloadbalancing:ap-southeast-1:122610509788:listener/app/wsi-app-alb/8c64a6bfb5899ca2/d9d1f2c886b4f7bf" [90m-> null[0m[0m
+      [31m-[0m[0m id                                                                  = "arn:aws:elasticloadbalancing:ap-southeast-1:122610509788:listener/app/wsi-app-alb/8c64a6bfb5899ca2/d9d1f2c886b4f7bf" [90m-> null[0m[0m
+      [31m-[0m[0m load_balancer_arn                                                   = "arn:aws:elasticloadbalancing:ap-southeast-1:122610509788:loadbalancer/app/wsi-app-alb/8c64a6bfb5899ca2" [90m-> null[0m[0m
+      [31m-[0m[0m port                                                                = 80 [90m-> null[0m[0m
+      [31m-[0m[0m protocol                                                            = "HTTP" [90m-> null[0m[0m
+      [31m-[0m[0m region                                                              = "ap-southeast-1" [90m-> null[0m[0m
+      [31m-[0m[0m routing_http_response_server_enabled                                = true [90m-> null[0m[0m
+      [31m-[0m[0m tags                                                                = {} [90m-> null[0m[0m
+      [31m-[0m[0m tags_all                                                            = {} [90m-> null[0m[0m
+        [90m# (11 unchanged attributes hidden)[0m[0m
+
+      [31m-[0m[0m default_action {
+          [31m-[0m[0m order            = 1 [90m-> null[0m[0m
+          [31m-[0m[0m target_group_arn = "arn:aws:elasticloadbalancing:ap-southeast-1:122610509788:targetgroup/wsi-app-tg/dc2b48bef8eace8a" [90m-> null[0m[0m
+          [31m-[0m[0m type             = "forward" [90m-> null[0m[0m
+        }
+    }
+
+[1m  # aws_lb_target_group.app_tg[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_lb_target_group" "app_tg" {
+      [31m-[0m[0m arn                                = "arn:aws:elasticloadbalancing:ap-southeast-1:122610509788:targetgroup/wsi-app-tg/dc2b48bef8eace8a" [90m-> null[0m[0m
+      [31m-[0m[0m arn_suffix                         = "targetgroup/wsi-app-tg/dc2b48bef8eace8a" [90m-> null[0m[0m
+      [31m-[0m[0m deregistration_delay               = "300" [90m-> null[0m[0m
+      [31m-[0m[0m id                                 = "arn:aws:elasticloadbalancing:ap-southeast-1:122610509788:targetgroup/wsi-app-tg/dc2b48bef8eace8a" [90m-> null[0m[0m
+      [31m-[0m[0m ip_address_type                    = "ipv4" [90m-> null[0m[0m
+      [31m-[0m[0m lambda_multi_value_headers_enabled = false [90m-> null[0m[0m
+      [31m-[0m[0m load_balancer_arns                 = [
+          [31m-[0m[0m "arn:aws:elasticloadbalancing:ap-southeast-1:122610509788:loadbalancer/app/wsi-app-alb/8c64a6bfb5899ca2",
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m load_balancing_algorithm_type      = "round_robin" [90m-> null[0m[0m
+      [31m-[0m[0m load_balancing_anomaly_mitigation  = "off" [90m-> null[0m[0m
+      [31m-[0m[0m load_balancing_cross_zone_enabled  = "use_load_balancer_configuration" [90m-> null[0m[0m
+      [31m-[0m[0m name                               = "wsi-app-tg" [90m-> null[0m[0m
+      [31m-[0m[0m port                               = 5000 [90m-> null[0m[0m
+      [31m-[0m[0m protocol                           = "HTTP" [90m-> null[0m[0m
+      [31m-[0m[0m protocol_version                   = "HTTP1" [90m-> null[0m[0m
+      [31m-[0m[0m proxy_protocol_v2                  = false [90m-> null[0m[0m
+      [31m-[0m[0m region                             = "ap-southeast-1" [90m-> null[0m[0m
+      [31m-[0m[0m slow_start                         = 0 [90m-> null[0m[0m
+      [31m-[0m[0m tags                               = {} [90m-> null[0m[0m
+      [31m-[0m[0m tags_all                           = {} [90m-> null[0m[0m
+      [31m-[0m[0m target_type                        = "ip" [90m-> null[0m[0m
+      [31m-[0m[0m vpc_id                             = "vpc-07310854bdd7b2a92" [90m-> null[0m[0m
+        [90m# (1 unchanged attribute hidden)[0m[0m
+
+      [31m-[0m[0m health_check {
+          [31m-[0m[0m enabled             = true [90m-> null[0m[0m
+          [31m-[0m[0m healthy_threshold   = 3 [90m-> null[0m[0m
+          [31m-[0m[0m interval            = 30 [90m-> null[0m[0m
+          [31m-[0m[0m matcher             = "200" [90m-> null[0m[0m
+          [31m-[0m[0m path                = "/healthcheck" [90m-> null[0m[0m
+          [31m-[0m[0m port                = "traffic-port" [90m-> null[0m[0m
+          [31m-[0m[0m protocol            = "HTTP" [90m-> null[0m[0m
+          [31m-[0m[0m timeout             = 5 [90m-> null[0m[0m
+          [31m-[0m[0m unhealthy_threshold = 3 [90m-> null[0m[0m
+        }
+
+      [31m-[0m[0m stickiness {
+          [31m-[0m[0m cookie_duration = 86400 [90m-> null[0m[0m
+          [31m-[0m[0m enabled         = false [90m-> null[0m[0m
+          [31m-[0m[0m type            = "lb_cookie" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+
+      [31m-[0m[0m target_failover {}
+
+      [31m-[0m[0m target_group_health {
+          [31m-[0m[0m dns_failover {
+              [31m-[0m[0m minimum_healthy_targets_count      = "1" [90m-> null[0m[0m
+              [31m-[0m[0m minimum_healthy_targets_percentage = "off" [90m-> null[0m[0m
+            }
+          [31m-[0m[0m unhealthy_state_routing {
+              [31m-[0m[0m minimum_healthy_targets_count      = 1 [90m-> null[0m[0m
+              [31m-[0m[0m minimum_healthy_targets_percentage = "off" [90m-> null[0m[0m
+            }
+        }
+
+      [31m-[0m[0m target_health_state {}
+    }
+
+[1m  # aws_nat_gateway.wsi_nat_gw_a[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_nat_gateway" "wsi_nat_gw_a" {
+      [31m-[0m[0m allocation_id                      = "eipalloc-0e1d69fcc0c1b85e8" [90m-> null[0m[0m
+      [31m-[0m[0m association_id                     = "eipassoc-05ab9a570ddb29364" [90m-> null[0m[0m
+      [31m-[0m[0m connectivity_type                  = "public" [90m-> null[0m[0m
+      [31m-[0m[0m id                                 = "nat-0aa78cb239171b9ea" [90m-> null[0m[0m
+      [31m-[0m[0m network_interface_id               = "eni-0164e756dfc8221f0" [90m-> null[0m[0m
+      [31m-[0m[0m private_ip                         = "10.0.10.201" [90m-> null[0m[0m
+      [31m-[0m[0m public_ip                          = "18.143.72.197" [90m-> null[0m[0m
+      [31m-[0m[0m region                             = "ap-southeast-1" [90m-> null[0m[0m
+      [31m-[0m[0m secondary_allocation_ids           = [] [90m-> null[0m[0m
+      [31m-[0m[0m secondary_private_ip_address_count = 0 [90m-> null[0m[0m
+      [31m-[0m[0m secondary_private_ip_addresses     = [] [90m-> null[0m[0m
+      [31m-[0m[0m subnet_id                          = "subnet-0925ccfcc7daef4b2" [90m-> null[0m[0m
+      [31m-[0m[0m tags                               = {
+          [31m-[0m[0m "Name" = "wsi-nat-gw-a"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m tags_all                           = {
+          [31m-[0m[0m "Name" = "wsi-nat-gw-a"
+        } [90m-> null[0m[0m
+    }
+
+[1m  # aws_nat_gateway.wsi_nat_gw_c[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_nat_gateway" "wsi_nat_gw_c" {
+      [31m-[0m[0m allocation_id                      = "eipalloc-026e46cb8d2abb969" [90m-> null[0m[0m
+      [31m-[0m[0m association_id                     = "eipassoc-0af14dcba05734b43" [90m-> null[0m[0m
+      [31m-[0m[0m connectivity_type                  = "public" [90m-> null[0m[0m
+      [31m-[0m[0m id                                 = "nat-0b05f797cde059e4e" [90m-> null[0m[0m
+      [31m-[0m[0m network_interface_id               = "eni-004ab092e67ff0c2f" [90m-> null[0m[0m
+      [31m-[0m[0m private_ip                         = "10.0.11.159" [90m-> null[0m[0m
+      [31m-[0m[0m public_ip                          = "47.129.15.3" [90m-> null[0m[0m
+      [31m-[0m[0m region                             = "ap-southeast-1" [90m-> null[0m[0m
+      [31m-[0m[0m secondary_allocation_ids           = [] [90m-> null[0m[0m
+      [31m-[0m[0m secondary_private_ip_address_count = 0 [90m-> null[0m[0m
+      [31m-[0m[0m secondary_private_ip_addresses     = [] [90m-> null[0m[0m
+      [31m-[0m[0m subnet_id                          = "subnet-08ca480013eaead21" [90m-> null[0m[0m
+      [31m-[0m[0m tags                               = {
+          [31m-[0m[0m "Name" = "wsi-nat-gw-c"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m tags_all                           = {
+          [31m-[0m[0m "Name" = "wsi-nat-gw-c"
+        } [90m-> null[0m[0m
+    }
+
+[1m  # aws_route_table.wsi_priv_rt_a[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_route_table" "wsi_priv_rt_a" {
+      [31m-[0m[0m arn              = "arn:aws:ec2:ap-southeast-1:122610509788:route-table/rtb-08ba62a5ef3bf3549" [90m-> null[0m[0m
+      [31m-[0m[0m id               = "rtb-08ba62a5ef3bf3549" [90m-> null[0m[0m
+      [31m-[0m[0m owner_id         = "122610509788" [90m-> null[0m[0m
+      [31m-[0m[0m propagating_vgws = [] [90m-> null[0m[0m
+      [31m-[0m[0m region           = "ap-southeast-1" [90m-> null[0m[0m
+      [31m-[0m[0m route            = [
+          [31m-[0m[0m {
+              [31m-[0m[0m cidr_block                 = "0.0.0.0/0"
+              [31m-[0m[0m nat_gateway_id             = "nat-0aa78cb239171b9ea"
+                [90m# (11 unchanged attributes hidden)[0m[0m
+            },
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m tags             = {
+          [31m-[0m[0m "Name" = "wsi-priv-rt-a"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m tags_all         = {
+          [31m-[0m[0m "Name" = "wsi-priv-rt-a"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m vpc_id           = "vpc-07310854bdd7b2a92" [90m-> null[0m[0m
+    }
+
+[1m  # aws_route_table.wsi_priv_rt_c[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_route_table" "wsi_priv_rt_c" {
+      [31m-[0m[0m arn              = "arn:aws:ec2:ap-southeast-1:122610509788:route-table/rtb-07a9fad6e3c7b1dca" [90m-> null[0m[0m
+      [31m-[0m[0m id               = "rtb-07a9fad6e3c7b1dca" [90m-> null[0m[0m
+      [31m-[0m[0m owner_id         = "122610509788" [90m-> null[0m[0m
+      [31m-[0m[0m propagating_vgws = [] [90m-> null[0m[0m
+      [31m-[0m[0m region           = "ap-southeast-1" [90m-> null[0m[0m
+      [31m-[0m[0m route            = [
+          [31m-[0m[0m {
+              [31m-[0m[0m cidr_block                 = "0.0.0.0/0"
+              [31m-[0m[0m nat_gateway_id             = "nat-0b05f797cde059e4e"
+                [90m# (11 unchanged attributes hidden)[0m[0m
+            },
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m tags             = {
+          [31m-[0m[0m "Name" = "wsi-priv-rt-c"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m tags_all         = {
+          [31m-[0m[0m "Name" = "wsi-priv-rt-c"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m vpc_id           = "vpc-07310854bdd7b2a92" [90m-> null[0m[0m
+    }
+
+[1m  # aws_route_table.wsi_pub_rt[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_route_table" "wsi_pub_rt" {
+      [31m-[0m[0m arn              = "arn:aws:ec2:ap-southeast-1:122610509788:route-table/rtb-09254958d233189f2" [90m-> null[0m[0m
+      [31m-[0m[0m id               = "rtb-09254958d233189f2" [90m-> null[0m[0m
+      [31m-[0m[0m owner_id         = "122610509788" [90m-> null[0m[0m
+      [31m-[0m[0m propagating_vgws = [] [90m-> null[0m[0m
+      [31m-[0m[0m region           = "ap-southeast-1" [90m-> null[0m[0m
+      [31m-[0m[0m route            = [
+          [31m-[0m[0m {
+              [31m-[0m[0m cidr_block                 = "0.0.0.0/0"
+              [31m-[0m[0m gateway_id                 = "igw-0f817f2d5649a3ae8"
+                [90m# (11 unchanged attributes hidden)[0m[0m
+            },
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m tags             = {
+          [31m-[0m[0m "Name" = "wsi-pub-rt"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m tags_all         = {
+          [31m-[0m[0m "Name" = "wsi-pub-rt"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m vpc_id           = "vpc-07310854bdd7b2a92" [90m-> null[0m[0m
+    }
+
+[1m  # aws_route_table_association.priv_a_association[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_route_table_association" "priv_a_association" {
+      [31m-[0m[0m id             = "rtbassoc-0e6dfd4faf979b4c9" [90m-> null[0m[0m
+      [31m-[0m[0m region         = "ap-southeast-1" [90m-> null[0m[0m
+      [31m-[0m[0m route_table_id = "rtb-08ba62a5ef3bf3549" [90m-> null[0m[0m
+      [31m-[0m[0m subnet_id      = "subnet-027cf2edb735d2f8e" [90m-> null[0m[0m
+        [90m# (1 unchanged attribute hidden)[0m[0m
+    }
+
+[1m  # aws_route_table_association.priv_c_association[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_route_table_association" "priv_c_association" {
+      [31m-[0m[0m id             = "rtbassoc-02221af1158e17728" [90m-> null[0m[0m
+      [31m-[0m[0m region         = "ap-southeast-1" [90m-> null[0m[0m
+      [31m-[0m[0m route_table_id = "rtb-07a9fad6e3c7b1dca" [90m-> null[0m[0m
+      [31m-[0m[0m subnet_id      = "subnet-042eb4b4e0d6758d5" [90m-> null[0m[0m
+        [90m# (1 unchanged attribute hidden)[0m[0m
+    }
+
+[1m  # aws_route_table_association.pub_a_association[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_route_table_association" "pub_a_association" {
+      [31m-[0m[0m id             = "rtbassoc-04824740672567c8d" [90m-> null[0m[0m
+      [31m-[0m[0m region         = "ap-southeast-1" [90m-> null[0m[0m
+      [31m-[0m[0m route_table_id = "rtb-09254958d233189f2" [90m-> null[0m[0m
+      [31m-[0m[0m subnet_id      = "subnet-0925ccfcc7daef4b2" [90m-> null[0m[0m
+        [90m# (1 unchanged attribute hidden)[0m[0m
+    }
+
+[1m  # aws_route_table_association.pub_c_association[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_route_table_association" "pub_c_association" {
+      [31m-[0m[0m id             = "rtbassoc-0ed47b19cf57cfbae" [90m-> null[0m[0m
+      [31m-[0m[0m region         = "ap-southeast-1" [90m-> null[0m[0m
+      [31m-[0m[0m route_table_id = "rtb-09254958d233189f2" [90m-> null[0m[0m
+      [31m-[0m[0m subnet_id      = "subnet-08ca480013eaead21" [90m-> null[0m[0m
+        [90m# (1 unchanged attribute hidden)[0m[0m
+    }
+
+[1m  # aws_security_group.alb_sg[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_security_group" "alb_sg" {
+      [31m-[0m[0m arn                    = "arn:aws:ec2:ap-southeast-1:122610509788:security-group/sg-090bac64e3bfb5c52" [90m-> null[0m[0m
+      [31m-[0m[0m description            = "Allow inbound traffic to ALB" [90m-> null[0m[0m
+      [31m-[0m[0m egress                 = [
+          [31m-[0m[0m {
+              [31m-[0m[0m cidr_blocks      = [
+                  [31m-[0m[0m "0.0.0.0/0",
+                ]
+              [31m-[0m[0m from_port        = 0
+              [31m-[0m[0m ipv6_cidr_blocks = []
+              [31m-[0m[0m prefix_list_ids  = []
+              [31m-[0m[0m protocol         = "-1"
+              [31m-[0m[0m security_groups  = []
+              [31m-[0m[0m self             = false
+              [31m-[0m[0m to_port          = 0
+                [90m# (1 unchanged attribute hidden)[0m[0m
+            },
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m id                     = "sg-090bac64e3bfb5c52" [90m-> null[0m[0m
+      [31m-[0m[0m ingress                = [
+          [31m-[0m[0m {
+              [31m-[0m[0m cidr_blocks      = [
+                  [31m-[0m[0m "0.0.0.0/0",
+                ]
+              [31m-[0m[0m from_port        = 80
+              [31m-[0m[0m ipv6_cidr_blocks = []
+              [31m-[0m[0m prefix_list_ids  = []
+              [31m-[0m[0m protocol         = "tcp"
+              [31m-[0m[0m security_groups  = []
+              [31m-[0m[0m self             = false
+              [31m-[0m[0m to_port          = 80
+                [90m# (1 unchanged attribute hidden)[0m[0m
+            },
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m name                   = "wsi-alb-sg" [90m-> null[0m[0m
+      [31m-[0m[0m owner_id               = "122610509788" [90m-> null[0m[0m
+      [31m-[0m[0m region                 = "ap-southeast-1" [90m-> null[0m[0m
+      [31m-[0m[0m revoke_rules_on_delete = false [90m-> null[0m[0m
+      [31m-[0m[0m tags                   = {} [90m-> null[0m[0m
+      [31m-[0m[0m tags_all               = {} [90m-> null[0m[0m
+      [31m-[0m[0m vpc_id                 = "vpc-07310854bdd7b2a92" [90m-> null[0m[0m
+        [90m# (1 unchanged attribute hidden)[0m[0m
+    }
+
+[1m  # aws_security_group.ecs_tasks_sg[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_security_group" "ecs_tasks_sg" {
+      [31m-[0m[0m arn                    = "arn:aws:ec2:ap-southeast-1:122610509788:security-group/sg-08ada4092e5f948ca" [90m-> null[0m[0m
+      [31m-[0m[0m description            = "Allow inbound traffic to ECS tasks" [90m-> null[0m[0m
+      [31m-[0m[0m egress                 = [
+          [31m-[0m[0m {
+              [31m-[0m[0m cidr_blocks      = [
+                  [31m-[0m[0m "0.0.0.0/0",
+                ]
+              [31m-[0m[0m from_port        = 0
+              [31m-[0m[0m ipv6_cidr_blocks = []
+              [31m-[0m[0m prefix_list_ids  = []
+              [31m-[0m[0m protocol         = "-1"
+              [31m-[0m[0m security_groups  = []
+              [31m-[0m[0m self             = false
+              [31m-[0m[0m to_port          = 0
+                [90m# (1 unchanged attribute hidden)[0m[0m
+            },
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m id                     = "sg-08ada4092e5f948ca" [90m-> null[0m[0m
+      [31m-[0m[0m ingress                = [
+          [31m-[0m[0m {
+              [31m-[0m[0m cidr_blocks      = []
+              [31m-[0m[0m from_port        = 5000
+              [31m-[0m[0m ipv6_cidr_blocks = []
+              [31m-[0m[0m prefix_list_ids  = []
+              [31m-[0m[0m protocol         = "tcp"
+              [31m-[0m[0m security_groups  = [
+                  [31m-[0m[0m "sg-090bac64e3bfb5c52",
+                ]
+              [31m-[0m[0m self             = false
+              [31m-[0m[0m to_port          = 5000
+                [90m# (1 unchanged attribute hidden)[0m[0m
+            },
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m name                   = "wsi-ecs-tasks-sg" [90m-> null[0m[0m
+      [31m-[0m[0m owner_id               = "122610509788" [90m-> null[0m[0m
+      [31m-[0m[0m region                 = "ap-southeast-1" [90m-> null[0m[0m
+      [31m-[0m[0m revoke_rules_on_delete = false [90m-> null[0m[0m
+      [31m-[0m[0m tags                   = {} [90m-> null[0m[0m
+      [31m-[0m[0m tags_all               = {} [90m-> null[0m[0m
+      [31m-[0m[0m vpc_id                 = "vpc-07310854bdd7b2a92" [90m-> null[0m[0m
+        [90m# (1 unchanged attribute hidden)[0m[0m
+    }
+
+[1m  # aws_subnet.wsi_priv_sn_a[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_subnet" "wsi_priv_sn_a" {
+      [31m-[0m[0m arn                                            = "arn:aws:ec2:ap-southeast-1:122610509788:subnet/subnet-027cf2edb735d2f8e" [90m-> null[0m[0m
+      [31m-[0m[0m assign_ipv6_address_on_creation                = false [90m-> null[0m[0m
+      [31m-[0m[0m availability_zone                              = "ap-southeast-1a" [90m-> null[0m[0m
+      [31m-[0m[0m availability_zone_id                           = "apse1-az2" [90m-> null[0m[0m
+      [31m-[0m[0m cidr_block                                     = "10.0.20.0/24" [90m-> null[0m[0m
+      [31m-[0m[0m enable_dns64                                   = false [90m-> null[0m[0m
+      [31m-[0m[0m enable_lni_at_device_index                     = 0 [90m-> null[0m[0m
+      [31m-[0m[0m enable_resource_name_dns_a_record_on_launch    = false [90m-> null[0m[0m
+      [31m-[0m[0m enable_resource_name_dns_aaaa_record_on_launch = false [90m-> null[0m[0m
+      [31m-[0m[0m id                                             = "subnet-027cf2edb735d2f8e" [90m-> null[0m[0m
+      [31m-[0m[0m ipv6_native                                    = false [90m-> null[0m[0m
+      [31m-[0m[0m map_customer_owned_ip_on_launch                = false [90m-> null[0m[0m
+      [31m-[0m[0m map_public_ip_on_launch                        = false [90m-> null[0m[0m
+      [31m-[0m[0m owner_id                                       = "122610509788" [90m-> null[0m[0m
+      [31m-[0m[0m private_dns_hostname_type_on_launch            = "ip-name" [90m-> null[0m[0m
+      [31m-[0m[0m region                                         = "ap-southeast-1" [90m-> null[0m[0m
+      [31m-[0m[0m tags                                           = {
+          [31m-[0m[0m "Name" = "wsi-priv-sn-a"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m tags_all                                       = {
+          [31m-[0m[0m "Name" = "wsi-priv-sn-a"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m vpc_id                                         = "vpc-07310854bdd7b2a92" [90m-> null[0m[0m
+        [90m# (4 unchanged attributes hidden)[0m[0m
+    }
+
+[1m  # aws_subnet.wsi_priv_sn_c[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_subnet" "wsi_priv_sn_c" {
+      [31m-[0m[0m arn                                            = "arn:aws:ec2:ap-southeast-1:122610509788:subnet/subnet-042eb4b4e0d6758d5" [90m-> null[0m[0m
+      [31m-[0m[0m assign_ipv6_address_on_creation                = false [90m-> null[0m[0m
+      [31m-[0m[0m availability_zone                              = "ap-southeast-1c" [90m-> null[0m[0m
+      [31m-[0m[0m availability_zone_id                           = "apse1-az3" [90m-> null[0m[0m
+      [31m-[0m[0m cidr_block                                     = "10.0.21.0/24" [90m-> null[0m[0m
+      [31m-[0m[0m enable_dns64                                   = false [90m-> null[0m[0m
+      [31m-[0m[0m enable_lni_at_device_index                     = 0 [90m-> null[0m[0m
+      [31m-[0m[0m enable_resource_name_dns_a_record_on_launch    = false [90m-> null[0m[0m
+      [31m-[0m[0m enable_resource_name_dns_aaaa_record_on_launch = false [90m-> null[0m[0m
+      [31m-[0m[0m id                                             = "subnet-042eb4b4e0d6758d5" [90m-> null[0m[0m
+      [31m-[0m[0m ipv6_native                                    = false [90m-> null[0m[0m
+      [31m-[0m[0m map_customer_owned_ip_on_launch                = false [90m-> null[0m[0m
+      [31m-[0m[0m map_public_ip_on_launch                        = false [90m-> null[0m[0m
+      [31m-[0m[0m owner_id                                       = "122610509788" [90m-> null[0m[0m
+      [31m-[0m[0m private_dns_hostname_type_on_launch            = "ip-name" [90m-> null[0m[0m
+      [31m-[0m[0m region                                         = "ap-southeast-1" [90m-> null[0m[0m
+      [31m-[0m[0m tags                                           = {
+          [31m-[0m[0m "Name" = "wsi-priv-sn-c"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m tags_all                                       = {
+          [31m-[0m[0m "Name" = "wsi-priv-sn-c"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m vpc_id                                         = "vpc-07310854bdd7b2a92" [90m-> null[0m[0m
+        [90m# (4 unchanged attributes hidden)[0m[0m
+    }
+
+[1m  # aws_subnet.wsi_pub_sn_a[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_subnet" "wsi_pub_sn_a" {
+      [31m-[0m[0m arn                                            = "arn:aws:ec2:ap-southeast-1:122610509788:subnet/subnet-0925ccfcc7daef4b2" [90m-> null[0m[0m
+      [31m-[0m[0m assign_ipv6_address_on_creation                = false [90m-> null[0m[0m
+      [31m-[0m[0m availability_zone                              = "ap-southeast-1a" [90m-> null[0m[0m
+      [31m-[0m[0m availability_zone_id                           = "apse1-az2" [90m-> null[0m[0m
+      [31m-[0m[0m cidr_block                                     = "10.0.10.0/24" [90m-> null[0m[0m
+      [31m-[0m[0m enable_dns64                                   = false [90m-> null[0m[0m
+      [31m-[0m[0m enable_lni_at_device_index                     = 0 [90m-> null[0m[0m
+      [31m-[0m[0m enable_resource_name_dns_a_record_on_launch    = false [90m-> null[0m[0m
+      [31m-[0m[0m enable_resource_name_dns_aaaa_record_on_launch = false [90m-> null[0m[0m
+      [31m-[0m[0m id                                             = "subnet-0925ccfcc7daef4b2" [90m-> null[0m[0m
+      [31m-[0m[0m ipv6_native                                    = false [90m-> null[0m[0m
+      [31m-[0m[0m map_customer_owned_ip_on_launch                = false [90m-> null[0m[0m
+      [31m-[0m[0m map_public_ip_on_launch                        = true [90m-> null[0m[0m
+      [31m-[0m[0m owner_id                                       = "122610509788" [90m-> null[0m[0m
+      [31m-[0m[0m private_dns_hostname_type_on_launch            = "ip-name" [90m-> null[0m[0m
+      [31m-[0m[0m region                                         = "ap-southeast-1" [90m-> null[0m[0m
+      [31m-[0m[0m tags                                           = {
+          [31m-[0m[0m "Name" = "wsi-pub-sn-a"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m tags_all                                       = {
+          [31m-[0m[0m "Name" = "wsi-pub-sn-a"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m vpc_id                                         = "vpc-07310854bdd7b2a92" [90m-> null[0m[0m
+        [90m# (4 unchanged attributes hidden)[0m[0m
+    }
+
+[1m  # aws_subnet.wsi_pub_sn_c[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_subnet" "wsi_pub_sn_c" {
+      [31m-[0m[0m arn                                            = "arn:aws:ec2:ap-southeast-1:122610509788:subnet/subnet-08ca480013eaead21" [90m-> null[0m[0m
+      [31m-[0m[0m assign_ipv6_address_on_creation                = false [90m-> null[0m[0m
+      [31m-[0m[0m availability_zone                              = "ap-southeast-1c" [90m-> null[0m[0m
+      [31m-[0m[0m availability_zone_id                           = "apse1-az3" [90m-> null[0m[0m
+      [31m-[0m[0m cidr_block                                     = "10.0.11.0/24" [90m-> null[0m[0m
+      [31m-[0m[0m enable_dns64                                   = false [90m-> null[0m[0m
+      [31m-[0m[0m enable_lni_at_device_index                     = 0 [90m-> null[0m[0m
+      [31m-[0m[0m enable_resource_name_dns_a_record_on_launch    = false [90m-> null[0m[0m
+      [31m-[0m[0m enable_resource_name_dns_aaaa_record_on_launch = false [90m-> null[0m[0m
+      [31m-[0m[0m id                                             = "subnet-08ca480013eaead21" [90m-> null[0m[0m
+      [31m-[0m[0m ipv6_native                                    = false [90m-> null[0m[0m
+      [31m-[0m[0m map_customer_owned_ip_on_launch                = false [90m-> null[0m[0m
+      [31m-[0m[0m map_public_ip_on_launch                        = true [90m-> null[0m[0m
+      [31m-[0m[0m owner_id                                       = "122610509788" [90m-> null[0m[0m
+      [31m-[0m[0m private_dns_hostname_type_on_launch            = "ip-name" [90m-> null[0m[0m
+      [31m-[0m[0m region                                         = "ap-southeast-1" [90m-> null[0m[0m
+      [31m-[0m[0m tags                                           = {
+          [31m-[0m[0m "Name" = "wsi-pub-sn-c"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m tags_all                                       = {
+          [31m-[0m[0m "Name" = "wsi-pub-sn-c"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m vpc_id                                         = "vpc-07310854bdd7b2a92" [90m-> null[0m[0m
+        [90m# (4 unchanged attributes hidden)[0m[0m
+    }
+
+[1m  # aws_vpc.wsi_vpc[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_vpc" "wsi_vpc" {
+      [31m-[0m[0m arn                                  = "arn:aws:ec2:ap-southeast-1:122610509788:vpc/vpc-07310854bdd7b2a92" [90m-> null[0m[0m
+      [31m-[0m[0m assign_generated_ipv6_cidr_block     = false [90m-> null[0m[0m
+      [31m-[0m[0m cidr_block                           = "10.0.0.0/16" [90m-> null[0m[0m
+      [31m-[0m[0m default_network_acl_id               = "acl-01f921f258f4030dd" [90m-> null[0m[0m
+      [31m-[0m[0m default_route_table_id               = "rtb-054006f7d7789f338" [90m-> null[0m[0m
+      [31m-[0m[0m default_security_group_id            = "sg-0ae0df642e27698d0" [90m-> null[0m[0m
+      [31m-[0m[0m dhcp_options_id                      = "dopt-0f3b978ae8e4a12dd" [90m-> null[0m[0m
+      [31m-[0m[0m enable_dns_hostnames                 = true [90m-> null[0m[0m
+      [31m-[0m[0m enable_dns_support                   = true [90m-> null[0m[0m
+      [31m-[0m[0m enable_network_address_usage_metrics = false [90m-> null[0m[0m
+      [31m-[0m[0m id                                   = "vpc-07310854bdd7b2a92" [90m-> null[0m[0m
+      [31m-[0m[0m instance_tenancy                     = "default" [90m-> null[0m[0m
+      [31m-[0m[0m ipv6_netmask_length                  = 0 [90m-> null[0m[0m
+      [31m-[0m[0m main_route_table_id                  = "rtb-054006f7d7789f338" [90m-> null[0m[0m
+      [31m-[0m[0m owner_id                             = "122610509788" [90m-> null[0m[0m
+      [31m-[0m[0m region                               = "ap-southeast-1" [90m-> null[0m[0m
+      [31m-[0m[0m tags                                 = {
+          [31m-[0m[0m "Name" = "wsi-vpc"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m tags_all                             = {
+          [31m-[0m[0m "Name" = "wsi-vpc"
+        } [90m-> null[0m[0m
+        [90m# (4 unchanged attributes hidden)[0m[0m
+    }
+
+[1m  # terraform_data.app[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "terraform_data" "app" {
+      [31m-[0m[0m id = "9623a5fe-c437-486b-c6f9-736d5cb99509" [90m-> null[0m[0m
+    }
+
+[1mPlan:[0m 0 to add, 0 to change, 32 to destroy.
+[0m
+Changes to Outputs:
+  [31m-[0m[0m alb_dns_name             = "wsi-app-alb-1396948629.ap-southeast-1.elb.amazonaws.com" [90m-> null[0m[0m
+  [31m-[0m[0m cloudwatch_dashboard_url = "https://ap-northeast-1.console.aws.amazon.com/cloudwatch/home?region=ap-northeast-1#dashboards:name=wsi-dashboard" [90m-> null[0m[0m
+  [31m-[0m[0m ecr_repository_url       = "122610509788.dkr.ecr.ap-southeast-1.amazonaws.com/wsi-app-repo" [90m-> null[0m[0m
+  [31m-[0m[0m ecs_cluster_name         = "wsi-app-cluster" [90m-> null[0m[0m
+[0m[1maws_cloudwatch_query_definition.app_query: Destroying... [id=f07890a3-2d28-4ce5-812d-8c6e1b6ce69e][0m[0m
+[0m[1maws_route_table_association.priv_a_association: Destroying... [id=rtbassoc-0e6dfd4faf979b4c9][0m[0m
+[0m[1maws_cloudwatch_dashboard.app_dashboard: Destroying... [id=wsi-dashboard][0m[0m
+[0m[1maws_iam_role_policy_attachment.ecs_task_execution_role_policy: Destroying... [id=wsi-ecs-task-execution-role/arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy][0m[0m
+[0m[1maws_route_table_association.pub_a_association: Destroying... [id=rtbassoc-04824740672567c8d][0m[0m
+[0m[1maws_route_table_association.pub_c_association: Destroying... [id=rtbassoc-0ed47b19cf57cfbae][0m[0m
+[0m[1maws_ecs_service.app_service: Destroying... [id=arn:aws:ecs:ap-southeast-1:122610509788:service/wsi-app-cluster/wsi-app-service][0m[0m
+[0m[1maws_route_table_association.priv_c_association: Destroying... [id=rtbassoc-02221af1158e17728][0m[0m
+[0m[1maws_cloudwatch_query_definition.app_query: Destruction complete after 0s[0m
+[0m[1maws_route_table_association.priv_c_association: Destruction complete after 0s[0m
+[0m[1maws_route_table.wsi_priv_rt_c: Destroying... [id=rtb-07a9fad6e3c7b1dca][0m[0m
+[0m[1maws_route_table_association.priv_a_association: Destruction complete after 0s[0m
+[0m[1maws_route_table_association.pub_c_association: Destruction complete after 0s[0m
+[0m[1maws_route_table.wsi_priv_rt_a: Destroying... [id=rtb-08ba62a5ef3bf3549][0m[0m
+[0m[1maws_route_table_association.pub_a_association: Destruction complete after 0s[0m
+[0m[1maws_route_table.wsi_pub_rt: Destroying... [id=rtb-09254958d233189f2][0m[0m
+[0m[1maws_iam_role_policy_attachment.ecs_task_execution_role_policy: Destruction complete after 0s[0m
+[0m[1maws_cloudwatch_dashboard.app_dashboard: Destruction complete after 1s[0m
+[0m[1maws_route_table.wsi_priv_rt_c: Destruction complete after 1s[0m
+[0m[1maws_nat_gateway.wsi_nat_gw_c: Destroying... [id=nat-0b05f797cde059e4e][0m[0m
+[0m[1maws_route_table.wsi_priv_rt_a: Destruction complete after 1s[0m
+[0m[1maws_nat_gateway.wsi_nat_gw_a: Destroying... [id=nat-0aa78cb239171b9ea][0m[0m
+[0m[1maws_route_table.wsi_pub_rt: Destruction complete after 1s[0m
+[0m[1maws_internet_gateway.wsi_igw: Destroying... [id=igw-0f817f2d5649a3ae8][0m[0m
+[0m[1maws_ecs_service.app_service: Still destroying... [id=arn:aws:ecs:ap-southeast-1:122610509788:service/wsi-app-cluster/wsi-app-service, 00m10s elapsed][0m[0m
+[0m[1maws_nat_gateway.wsi_nat_gw_c: Still destroying... [id=nat-0b05f797cde059e4e, 00m10s elapsed][0m[0m
+[0m[1maws_nat_gateway.wsi_nat_gw_a: Still destroying... [id=nat-0aa78cb239171b9ea, 00m10s elapsed][0m[0m
+[0m[1maws_internet_gateway.wsi_igw: Still destroying... [id=igw-0f817f2d5649a3ae8, 00m10s elapsed][0m[0m
+[0m[1maws_ecs_service.app_service: Still destroying... [id=arn:aws:ecs:ap-southeast-1:122610509788:service/wsi-app-cluster/wsi-app-service, 00m20s elapsed][0m[0m
+[0m[1maws_nat_gateway.wsi_nat_gw_c: Still destroying... [id=nat-0b05f797cde059e4e, 00m20s elapsed][0m[0m
+[0m[1maws_nat_gateway.wsi_nat_gw_a: Still destroying... [id=nat-0aa78cb239171b9ea, 00m20s elapsed][0m[0m
+[0m[1maws_internet_gateway.wsi_igw: Still destroying... [id=igw-0f817f2d5649a3ae8, 00m20s elapsed][0m[0m
+[0m[1maws_ecs_service.app_service: Still destroying... [id=arn:aws:ecs:ap-southeast-1:122610509788:service/wsi-app-cluster/wsi-app-service, 00m30s elapsed][0m[0m
+[0m[1maws_nat_gateway.wsi_nat_gw_c: Still destroying... [id=nat-0b05f797cde059e4e, 00m30s elapsed][0m[0m
+[0m[1maws_nat_gateway.wsi_nat_gw_a: Still destroying... [id=nat-0aa78cb239171b9ea, 00m30s elapsed][0m[0m
+[0m[1maws_internet_gateway.wsi_igw: Still destroying... [id=igw-0f817f2d5649a3ae8, 00m30s elapsed][0m[0m
+[0m[1maws_ecs_service.app_service: Still destroying... [id=arn:aws:ecs:ap-southeast-1:122610509788:service/wsi-app-cluster/wsi-app-service, 00m40s elapsed][0m[0m
+[0m[1maws_nat_gateway.wsi_nat_gw_c: Still destroying... [id=nat-0b05f797cde059e4e, 00m40s elapsed][0m[0m
+[0m[1maws_nat_gateway.wsi_nat_gw_a: Still destroying... [id=nat-0aa78cb239171b9ea, 00m40s elapsed][0m[0m
+[0m[1maws_internet_gateway.wsi_igw: Still destroying... [id=igw-0f817f2d5649a3ae8, 00m40s elapsed][0m[0m
+[0m[1maws_nat_gateway.wsi_nat_gw_a: Destruction complete after 42s[0m
+[0m[1maws_eip.nat_eip_a: Destroying... [id=eipalloc-0e1d69fcc0c1b85e8][0m[0m
+[0m[1maws_eip.nat_eip_a: Destruction complete after 1s[0m
+[0m[1maws_ecs_service.app_service: Still destroying... [id=arn:aws:ecs:ap-southeast-1:122610509788:service/wsi-app-cluster/wsi-app-service, 00m50s elapsed][0m[0m
+[0m[1maws_nat_gateway.wsi_nat_gw_c: Still destroying... [id=nat-0b05f797cde059e4e, 00m50s elapsed][0m[0m
+[0m[1maws_internet_gateway.wsi_igw: Still destroying... [id=igw-0f817f2d5649a3ae8, 00m50s elapsed][0m[0m
+[0m[1maws_ecs_service.app_service: Still destroying... [id=arn:aws:ecs:ap-southeast-1:122610509788:service/wsi-app-cluster/wsi-app-service, 01m00s elapsed][0m[0m
+[0m[1maws_nat_gateway.wsi_nat_gw_c: Still destroying... [id=nat-0b05f797cde059e4e, 01m00s elapsed][0m[0m
+[0m[1maws_internet_gateway.wsi_igw: Still destroying... [id=igw-0f817f2d5649a3ae8, 01m00s elapsed][0m[0m
+[0m[1maws_nat_gateway.wsi_nat_gw_c: Destruction complete after 1m2s[0m
+[0m[1maws_eip.nat_eip_c: Destroying... [id=eipalloc-026e46cb8d2abb969][0m[0m
+[0m[1maws_eip.nat_eip_c: Destruction complete after 1s[0m
+[0m[1maws_ecs_service.app_service: Still destroying... [id=arn:aws:ecs:ap-southeast-1:122610509788:service/wsi-app-cluster/wsi-app-service, 01m10s elapsed][0m[0m
+[0m[1maws_internet_gateway.wsi_igw: Still destroying... [id=igw-0f817f2d5649a3ae8, 01m10s elapsed][0m[0m
+[0m[1maws_ecs_service.app_service: Still destroying... [id=arn:aws:ecs:ap-southeast-1:122610509788:service/wsi-app-cluster/wsi-app-service, 01m20s elapsed][0m[0m
+[0m[1maws_internet_gateway.wsi_igw: Still destroying... [id=igw-0f817f2d5649a3ae8, 01m20s elapsed][0m[0m
+[0m[1maws_ecs_service.app_service: Still destroying... [id=arn:aws:ecs:ap-southeast-1:122610509788:service/wsi-app-cluster/wsi-app-service, 01m30s elapsed][0m[0m
+[0m[1maws_internet_gateway.wsi_igw: Still destroying... [id=igw-0f817f2d5649a3ae8, 01m30s elapsed][0m[0m
+[0m[1maws_ecs_service.app_service: Still destroying... [id=arn:aws:ecs:ap-southeast-1:122610509788:service/wsi-app-cluster/wsi-app-service, 01m40s elapsed][0m[0m
+[0m[1maws_internet_gateway.wsi_igw: Still destroying... [id=igw-0f817f2d5649a3ae8, 01m40s elapsed][0m[0m
+[0m[1maws_ecs_service.app_service: Still destroying... [id=arn:aws:ecs:ap-southeast-1:122610509788:service/wsi-app-cluster/wsi-app-service, 01m50s elapsed][0m[0m
+[0m[1maws_internet_gateway.wsi_igw: Still destroying... [id=igw-0f817f2d5649a3ae8, 01m50s elapsed][0m[0m
+[0m[1maws_ecs_service.app_service: Still destroying... [id=arn:aws:ecs:ap-southeast-1:122610509788:service/wsi-app-cluster/wsi-app-service, 02m00s elapsed][0m[0m
+[0m[1maws_internet_gateway.wsi_igw: Still destroying... [id=igw-0f817f2d5649a3ae8, 02m00s elapsed][0m[0m
+[0m[1maws_ecs_service.app_service: Still destroying... [id=arn:aws:ecs:ap-southeast-1:122610509788:service/wsi-app-cluster/wsi-app-service, 02m10s elapsed][0m[0m
+[0m[1maws_internet_gateway.wsi_igw: Still destroying... [id=igw-0f817f2d5649a3ae8, 02m10s elapsed][0m[0m
+
+Interrupt received.
+Please wait for Terraform to exit or data loss may occur.
+Gracefully shutting down...
+
+Stopping operation...
+[33m╷[0m[0m
+[33m│[0m [0m[1m[33mWarning: [0m[0m[1mDeprecated attribute[0m
+[33m│[0m [0m
+[33m│[0m [0m[0m  on ecs.tf line 67, in resource "aws_ecs_task_definition" "app_task":
+[33m│[0m [0m  67:           "awslogs-region"        = data.aws_region.current[4m.name[0m[0m
+[33m│[0m [0m
+[33m│[0m [0mThe attribute "name" is deprecated. Refer to the provider documentation for
+[33m│[0m [0mdetails.
+[33m╵[0m[0m
+[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mwaiting for ECS Service (arn:aws:ecs:ap-southeast-1:122610509788:service/wsi-app-cluster/wsi-app-service) delete: context canceled[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m
+[31m╵[0m[0m
+[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mexecution halted[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m
+[31m╵[0m[0m
+[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mexecution halted[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m
+[31m╵[0m[0m
+[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mdeleting EC2 Internet Gateway (igw-0f817f2d5649a3ae8): detaching EC2 Internet Gateway (igw-0f817f2d5649a3ae8) from VPC (vpc-07310854bdd7b2a92): operation error EC2: DetachInternetGateway, https response error StatusCode: 400, RequestID: 19bff96b-7730-4633-a811-aa1261af9872, api error DependencyViolation: Network vpc-07310854bdd7b2a92 has some mapped public address(es). Please unmap those public address(es) before detaching the gateway.[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m
+[31m╵[0m[0m
+[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mexecution halted[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m
+[31m╵[0m[0m
+[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mexecution halted[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m
+[31m╵[0m[0m
