@@ -45,6 +45,20 @@ data:
         Key_Name log
         Parser   app
 
+    [FILTER]
+        Name     modify
+        Match    *
+        Remove time
+        Condition Key_Value_Equals path /green
+        Set tag green
+
+    [FILTER]
+        Name     modify
+        Match    *
+        Remove time
+        Condition Key_Value_Equals path /red
+        Set tag red
+
     [OUTPUT]
         Name               es
         Match              *
