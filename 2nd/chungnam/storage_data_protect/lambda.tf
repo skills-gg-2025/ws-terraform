@@ -97,10 +97,12 @@ def mask_sensitive_data(content):
         if not line:
             continue
             
-        # Names - mask last name (Crystal White -> Crystal *****)
-        if re.match(r'^[A-Za-z]+ [A-Za-z]+$', line):
-            parts = line.split(' ')
-            masked_lines.append(f"{parts[0]} *****")
+        # Names - mask last name only (keeping prefixes like Mr., Mrs., Dr.)
+        if re.match(r'^[A-Za-z. ]+$', line) and len(line.split()) >= 2:
+            parts = line.split()
+            # 마지막 단어만 ***** 처리
+            parts[-1] = "*****"
+            masked_lines.append(" ".join(parts))
         
         # Emails - mask username part (davisjesus@example.org -> d*********@example.org)
         elif '@' in line:
