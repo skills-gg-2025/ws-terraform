@@ -54,15 +54,6 @@ resource "aws_vpclattice_service_network_vpc_association" "consumer" {
   }
 }
 
-# VPC Lattice Service Network VPC Association for Service VPC
-resource "aws_vpclattice_service_network_vpc_association" "service" {
-  vpc_identifier             = aws_vpc.service.id
-  service_network_identifier = aws_vpclattice_service_network.main.id
-
-  tags = {
-    Name = "skills-service-vpc-association"
-  }
-}
 
 # VPC Lattice Service Listener
 resource "aws_vpclattice_listener" "app" {
