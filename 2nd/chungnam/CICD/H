@@ -1,0 +1,4 @@
+kubectl -n argocd patch secret argocd-secret \
+  --type merge \
+  -p "$(echo -n '{"data":{"admin.password":"' ; htpasswd -nbBC 10 "" 'Skills53' | tr -d ':\n' | base64 -w0 ; echo '"}}')" \
+&& kubectl -n argocd rollout restart deployment argocd-server
